@@ -1,0 +1,19 @@
+name: Pull Request Pipeline
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+        branches:
+        - main
+        - develop
+        - feature/**
+        - bugfix/**
+        - hotfix/**
+        - release/**
+        paths-ignore:
+        - "*.md"
+jobs:
+    call-reusable-workflow:
+        uses: ./.github/workflows/workflow_commit_linter.yml
+        with:
+            node_version: "21"
