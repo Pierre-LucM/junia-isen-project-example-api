@@ -17,3 +17,4 @@ jobs:
         uses: ./.github/workflows/workflow_commit_linter.yml
         with:
             node_version: "21"
+
