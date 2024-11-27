@@ -30,25 +30,35 @@ jobs:
 
       - name: Setup Environment
         run: |
-            commands=$(echo '${{ inputs.commands }}' | sed 's/\[//g' | sed 's/\]//g' | tr ',' '\n' | sed 's/\"//g')
+            # Process the input commands
+            commands=$(echo '${{ inputs.commands }}' | sed 's/\[//g' | sed 's/\]//g' | tr ',' '\n' | sed 's/\"//g' | sed 's/^ *//g' | sed 's/ *$//g')
+
+            # Print the commands to be executed
             echo "Commands to be executed:"
             echo "$commands"
-            for cmd in $commands; do
-              echo "Executing: $cmd"
-              $cmd
-              if [ $? -ne 0 ]; then
-                echo "Command failed: $cmd"
-                exit 1
+
+            # Execute each command
+            while IFS= read -r cmd; do
+              if [ -n "$cmd" ]; then
+                echo "Executing: $cmd"
+                $cmd
+                if [ $? -ne 0 ]; then
+                  echo "Command failed: $cmd"
+                  exit 1
+                  fi
               fi
-            done
+            done <<< "$commands"
       - name: Print versions
         run: |
           version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n')
-          for cmd in $version_commands; do
-              echo "Executing: $cmd"
-              $cmd
-              if [ $? -ne 0 ]; then
-                echo "Command failed: $cmd"
-                exit 1
+           # Execute each command
+            while IFS= read -r cmd; do
+              if [ -n "$cmd" ]; then
+                echo "Executing: $cmd"
+                $cmd
+                if [ $? -ne 0 ]; then
+                  echo "Command failed: $cmd"
+                  exit 1
+                  fi
               fi
-            done
+            done <<< "$version_commands"
