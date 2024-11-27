@@ -31,15 +31,10 @@ jobs:
       - name: Setup Environment
         run: |
           commands=$(echo '${{ inputs.commands }}' | sed 's/\[//g' | sed 's/\]//g'| tr ',' '\n' | sed 's/\"//g')
-          echo "Running commands: $commands"
-          for command in $commands; do
-            $command
-          done
+          $commands
+         
   
       - name: Print versions
         run: |
           version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[//g' | sed 's/\]//g'| tr ',' '\n' | sed 's/\"//g')
-          echo "Running version commands: $version_commands"
-          for command in $version_commands; do
-            $command
-          done
+          $version_commands
