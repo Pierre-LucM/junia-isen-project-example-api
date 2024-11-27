@@ -30,14 +30,14 @@ jobs:
 
       - name: Setup Environment
         run: |
-          commands=${{ inputs.commands }}
-          for command in ${commands//,/ }; do
+          commands=$(echo '${{ inputs.commands }}' | sed 's/, /\n/g')
+          for command in $commands; do
             eval "$command"
           done
-
+  
       - name: Print versions
         run: |
-          version_commands=${{ inputs.version_commands }}
-          for command in ${version_commands//,/ }; do
+          version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/, /\n/g')
+          for command in $version_commands; do
             eval "$command"
           done
