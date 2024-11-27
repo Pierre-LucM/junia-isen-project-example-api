@@ -6,7 +6,7 @@ on:
       python_version:
         description: "Python version to use"
         required: true
-        default: '["3.8", "3.9"]'
+        default: '3.9'
         type: string
 
 jobs:
@@ -28,13 +28,11 @@ jobs:
 
       - name: Setup Python
         run: |
-          for version in ${{ fromJson(inputs.python_version) }}; do
-              sudo apt install -y python$version
-          done
+              sudo apt install -y python${{ inputs.python_version }}
 
       - name: Check if Python is installed and exit if not
         run: |
-          python_version=(${{ toJson(fromJson(inputs.python_version)) }})
+          python_version=(${{ inputs.python_version }})
           for version in "${python_version[@]}"; do
               if ! command -v python$version &> /dev/null; then
                   echo "Python $version could not be found"
