@@ -30,7 +30,7 @@ jobs:
 
       - name: Setup Environment
         run: |
-          commands=$(echo '${{ inputs.commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n' | sed 's/\"//g')
+          commands=$(echo '${{ inputs.commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n')
           for cmd in "${commands[@]}"; do
             echo "Running: $cmd"
             eval $cmd
@@ -41,7 +41,7 @@ jobs:
           done
       - name: Print versions
         run: |
-          version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n' | sed 's/\"//g')
+          version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n')
           for cmd in "${version_commands[@]}"; do
             echo "Running: $cmd"
             eval $cmd
