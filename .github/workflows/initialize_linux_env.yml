@@ -33,8 +33,7 @@ jobs:
           commands=$(echo '${{ inputs.commands }}' | sed 's/\[//g' | sed 's/\]//g'| tr ',' '\n' | sed 's/\"//g')
           echo "Running commands: $commands"
           for command in $commands; do
-            echo "Running command: $command"
-            eval "$command"
+            $command
           done
   
       - name: Print versions
@@ -42,6 +41,5 @@ jobs:
           version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[//g' | sed 's/\]//g'| tr ',' '\n' | sed 's/\"//g')
           echo "Running version commands: $version_commands"
           for command in $version_commands; do
-            echo "Running version command: $command"
-            eval "$command"
+            $command
           done
