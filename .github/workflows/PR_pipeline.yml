@@ -24,7 +24,7 @@ jobs:
         needs: lint-test
         uses: ./.github/workflows/build.yml
         with:
-            python_version: '3.9'
+            python_version: '3'
 
     
     # CodeQL Analysis Job - Analyze the code using CodeQL. If the code contains any security vulnerabilities, the job will fail.
