@@ -31,10 +31,22 @@ jobs:
       - name: Setup Environment
         run: |
           commands=$(echo '${{ inputs.commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n' | sed 's/\"//g')
-          echo $(eval $commands)
-         
-  
+          for cmd in "${commands[@]}"; do
+            echo "Running: $cmd"
+            eval $cmd
+            if [ $? -ne 0 ]; then
+              echo "Command failed: $cmd"
+              exit 1
+            fi
+          done
       - name: Print versions
         run: |
           version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n' | sed 's/\"//g')
-          echo $(eval $version_commands)
+          for cmd in "${version_commands[@]}"; do
+            echo "Running: $cmd"
+            eval $cmd
+            if [ $? -ne 0 ]; then
+              echo "Command failed: $cmd"
+              exit 1
+            fi
+          done
