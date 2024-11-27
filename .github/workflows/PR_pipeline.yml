@@ -2,19 +2,34 @@ name: "Pull Request Pipeline"
 
 on:
     pull_request:
-        types: [opened, synchronize, reopened]
+        types: [opened, synchronize, reopened,closed]
         branches:
-        - main
-        - develop
-        - feature/**
-        - bugfix/**
-        - hotfix/**
-        - release/**
+        - '**'
         paths-ignore:
         - "*.md"
 jobs:
-    call-reusable-workflow:
+    # Commit Linter Job - Lint the commit messages in the PR and commits in the merge branch. If the commit messages do not follow the conventional commit message format, the job will fail.
+    commit-linter:
         uses: ./.github/workflows/workflow_commit_linter.yml
         with:
             node_version: "21"
+    # API Lint and Test Job - Lint the API code and run the tests. If the code does not pass the linting or tests, the job will fail.
+    lint-test:
+        needs: commit-linter
+        uses: ./.github/workflows/lint_test.yml
+        with:
+            python_version: '3'
+    # Build Job - Build the Python project using the `uv` tool. If the build fails, the job will fail.
+    build:
+        needs: lint-test
+        uses: ./.github/workflows/build.yml
+        with:
+            python_version: '3'
 
+    
+    # CodeQL Analysis Job - Analyze the code using CodeQL. If the code contains any security vulnerabilities, the job will fail.
+    codeql-analysis:
+        needs: build
+        uses: ./.github/workflows/analysis.yml
+        with:
+            language: 'python'

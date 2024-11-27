@@ -1,0 +1,64 @@
+name: "Initialize Linux Environment"
+
+on:
+  workflow_call:
+    inputs:
+      distros:
+        description: "Linux distributions to use"
+        required: true
+        default: '["ubuntu-22.04", "ubuntu-20.04"]'
+        type: string
+      commands:
+        description: "Setups commands to run"
+        required: true
+        default: '["sudo apt update", "sudo apt install -y sudo", "sudo apt install -y git curl"]'
+        type: string
+      version_commands:
+        description: "Commands to print versions"
+        required: true
+        default: '["git --version"]'
+        type: string
+
+jobs:
+  initialize:
+    runs-on: ${{ fromJson(inputs.distros) }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        run: |
+            # Process the input commands
+            commands=$(echo '${{ inputs.commands }}' | sed 's/\[//g' | sed 's/\]//g' | tr ',' '\n' | sed 's/\"//g' | sed 's/^ *//g' | sed 's/ *$//g')
+
+            # Print the commands to be executed
+            echo "Commands to be executed:"
+            echo "$commands"
+
+            # Execute each command
+            while IFS= read -r cmd; do
+              if [ -n "$cmd" ]; then
+                echo "Executing: $cmd"
+                eval "$cmd"
+                if [ $? -ne 0 ]; then
+                  echo "Command failed: $cmd"
+                  exit 1
+                  fi
+              fi
+            done <<< "$commands"
+      - name: Print versions
+        run: |
+          version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[//g' | sed 's/\]//g'| tr ',' '\n' | sed 's/\"//g' | sed 's/^ *//g' | sed 's/ *$//g')
+           # Execute each command
+            while IFS= read -r cmd; do
+              if [ -n "$cmd" ]; then
+                echo "Executing: $cmd"
+                eval "$cmd"
+                if [ $? -ne 0 ]; then
+                  echo "Command failed: $cmd"
+                  exit 1
+                  fi
+              fi
+            done <<< "$version_commands"
