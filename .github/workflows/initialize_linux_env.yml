@@ -30,12 +30,14 @@ jobs:
 
       - name: Setup Environment
         run: |
-          for command in ${{ fromJson(inputs.commands) }}; do
-              eval $command
+          commands=(${{ toJson(fromJson(inputs.commands)) }})
+          for command in "${commands[@]}"; do
+            eval $command
           done
 
       - name: Print versions
         run: |
-          for command in ${{ fromJson(inputs.version_commands) }}; do
-              $command
+          version_commands=(${{ toJson(fromJson(inputs.version_commands)) }})
+          for command in "${version_commands[@]}"; do
+            eval $command
           done

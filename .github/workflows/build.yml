@@ -34,7 +34,8 @@ jobs:
 
       - name: Check if Python is installed and exit if not
         run: |
-          for version in ${{ fromJson(inputs.python_version) }}; do
+          python_version=(${{ toJson(fromJson(inputs.python_version)) }})
+          for version in "${python_version[@]}"; do
               if ! command -v python$version &> /dev/null; then
                   echo "Python $version could not be found"
                   exit 1
