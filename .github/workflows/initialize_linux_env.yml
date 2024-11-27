@@ -30,14 +30,14 @@ jobs:
 
       - name: Setup Environment
         run: |
-          IFS=',' read -r -a commands <<< "${{ inputs.commands }}"
-          for command in "${commands[@]}"; do
+          commands=$(echo '${{ inputs.commands }}' | jq -r '.[]')
+          for command in $commands; do
             eval $command
           done
-
+  
       - name: Print versions
         run: |
-          IFS=',' read -r -a version_commands <<< "${{ inputs.version_commands }}"
-          for command in "${version_commands[@]}"; do
+          version_commands=$(echo '${{ inputs.version_commands }}' | jq -r '.[]')
+          for command in $version_commands; do
             eval $command
           done
