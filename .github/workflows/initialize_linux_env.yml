@@ -34,13 +34,14 @@ jobs:
           echo "Running commands: $commands"
           for command in $commands; do
             echo "Running command: $command"
-            $command
+            eval "$command"
           done
   
       - name: Print versions
         run: |
           version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/[\[\]"]//g' | sed 's/, /\n/g')
+          echo "Running version commands: $version_commands"
           for command in $version_commands; do
-            echo "Running command: $command"  
-            $command
+            echo "Running version command: $command"
+            eval "$command"
           done
