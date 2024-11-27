@@ -50,7 +50,7 @@ jobs:
             done <<< "$commands"
       - name: Print versions
         run: |
-          version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n' | sed 's/\"//g' | sed 's/^ *//g' | sed 's/ *$//g')
+          version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[//g' | sed 's/\]//g'| tr ',' '\n' | sed 's/\"//g' | sed 's/^ *//g' | sed 's/ *$//g')
            # Execute each command
             while IFS= read -r cmd; do
               if [ -n "$cmd" ]; then
