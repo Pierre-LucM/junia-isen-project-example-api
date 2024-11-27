@@ -15,7 +15,7 @@ jobs:
     uses: ./.github/workflows/initialize_linux_env.yml
     with:
       distros: '["ubuntu-22.04"]'
-      commands: '[ "apt-get update", "apt-get install -y git curl", "curl -sL https://deb.nodesource.com/setup_21.x | bash -", "DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs" ]'
+      commands: '["sudo apt update", "sudo apt install -y sudo", "sudo apt install -y git curl", "sudo curl -sL https://deb.nodesource.com/setup_${{ inputs.node_version }}.x | sudo -E bash -", "sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs"]'
       version_commands: '["git --version", "node --version", "npm --version", "npx commitlint --version"]'
 
   commitlint:
