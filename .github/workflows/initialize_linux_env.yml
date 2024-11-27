@@ -30,11 +30,11 @@ jobs:
 
       - name: Setup Environment
         run: |
-          commands=$(echo '${{ inputs.commands }}' | sed 's/\[//g' | sed 's/\]//g'| tr ',' '\n' | sed 's/\"//g')
+          commands=$(echo '${{ inputs.commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n' | sed 's/\"//g')
           echo $(eval $commands)
          
   
       - name: Print versions
         run: |
-          version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[//g' | sed 's/\]//g'| tr ',' '\n' | sed 's/\"//g')
+          version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/\[/(/g' | sed 's/\]/)/g'| tr ',' '\n' | sed 's/\"//g')
           echo $(eval $version_commands)
