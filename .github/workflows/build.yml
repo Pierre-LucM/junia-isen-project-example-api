@@ -1,0 +1,65 @@
+name: "Build Python project" # build python project with uv
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        description: "Python version to use"
+        required: true
+        default: '["3.8", "3.9"]'
+        type: string
+
+jobs:
+  initialize-linux-environment:
+    uses: ./.github/workflows/initialize_linux_env.yml
+    with:
+      distros: '["ubuntu-22.04"]'
+      commands: '["sudo apt update", "sudo apt install -y sudo", "sudo apt install -y git curl",  "sudo apt install -y python3-pip", "sudo apt install -y python3-venv"]'
+      version_commands: '["git --version", "python3 --version", "pip3 --version"]'
+
+  build:
+    needs: initialize-linux-environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        run: |
+          for version in ${{ fromJson(inputs.python_version) }}; do
+              sudo apt install -y python$version
+          done
+
+      - name: Check if Python is installed and exit if not
+        run: |
+          for version in ${{ fromJson(inputs.python_version) }}; do
+              if ! command -v python$version &> /dev/null; then
+                  echo "Python $version could not be found"
+                  exit 1
+              fi
+          done
+
+        # Install `uv` and project dependencies using `uv`. Upgrade `pip` before installing `uv`.
+        # Purpose: Install the `uv` tool and project dependencies using `uv`. Upgrade `pip` before installing `uv`.
+      - name: Install `uv` and project dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv  # Install the `uv` tool (if hosted on PyPI)
+          uv sync          # Sync dependencies using `uv`
+
+        # Build the project
+        # Purpose: Build the project using the `uv` tool.
+      - name: Build project
+        run: |
+          uv build    # run the build command
+
+      - name : Validate the build
+        run: |
+          if [ -d "dist" ]; then
+              echo "Build successful"
+          else
+              echo "Build failed"
+              exit 1
+          fi

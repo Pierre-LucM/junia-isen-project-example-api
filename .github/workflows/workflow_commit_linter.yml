@@ -10,29 +10,22 @@ on:
         type: string
 
 jobs:
-  commitlint:
-    runs-on: ubuntu-22.04
 
+  initialize_environment:
+    uses: ./.github/workflows/initialize_linux_env.yml
+    with:
+      distros: '["ubuntu-22.04"]'
+      commands: '["sudo apt update", "sudo apt install -y sudo", "sudo apt install -y git curl", "sudo curl -sL https://deb.nodesource.com/setup_${{ inputs.node_version }}.x | sudo -E bash -", "sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs"]'
+      version_commands: '["git --version", "node --version", "npm --version", "npx commitlint --version"]'
+
+  commitlint:
+    needs: initialize_environment
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Install required dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y sudo
-          sudo apt install -y git curl
-          sudo curl -sL https://deb.nodesource.com/setup_${{ inputs.node_version }}.x | sudo -E bash -
-          sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs
-
-      - name: Print versions
-        run: |
-          git --version
-          node --version
-          npm --version
-          npx commitlint --version
 
       - name: Install commitlint
         run: |

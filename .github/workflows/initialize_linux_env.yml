@@ -1,0 +1,41 @@
+name: "Initialize Linux Environment"
+
+on:
+  workflow_call:
+    inputs:
+      distros:
+        description: "Linux distributions to use"
+        required: true
+        default: '["ubuntu-22.04", "ubuntu-20.04"]'
+        type: string
+      commands:
+        description: "Setups commands to run"
+        required: true
+        default: '["sudo apt update", "sudo apt install -y sudo", "sudo apt install -y git curl"]'
+        type: string
+      version_commands:
+        description: "Commands to print versions"
+        required: true
+        default: '["git --version"]'
+        type: string
+
+jobs:
+  initialize:
+    runs-on: ${{ fromJson(inputs.distros) }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        run: |
+          for command in ${{ fromJson(inputs.commands) }}; do
+              eval $command
+          done
+
+      - name: Print versions
+        run: |
+          for command in ${{ fromJson(inputs.version_commands) }}; do
+              $command
+          done
