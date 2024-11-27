@@ -33,6 +33,7 @@ jobs:
           commands=$(echo '${{ inputs.commands }}' | sed 's/, /\n/g')
           echo "Running commands: $commands"
           for command in $commands; do
+            echo "Running command: $command"
             $command
           done
   
@@ -40,5 +41,6 @@ jobs:
         run: |
           version_commands=$(echo '${{ inputs.version_commands }}' | sed 's/, /\n/g')
           for command in $version_commands; do
+            echo "Running command: $command"
             $command
           done
