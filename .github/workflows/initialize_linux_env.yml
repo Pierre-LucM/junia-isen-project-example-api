@@ -28,16 +28,21 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: Setup Environment
         run: |
           commands=$(echo '${{ inputs.commands }}' | jq -r '.[]')
-          for command in $commands; do
-            eval $command
+          IFS=$'\n' read -rd '' -a command_array <<<"$commands"
+          for command in "${command_array[@]}"; do
+            eval "$command"
           done
-  
+
       - name: Print versions
         run: |
           version_commands=$(echo '${{ inputs.version_commands }}' | jq -r '.[]')
-          for command in $version_commands; do
-            eval $command
+          IFS=$'\n' read -rd '' -a version_command_array <<<"$version_commands"
+          for command in "${version_command_array[@]}"; do
+            eval "$command"
           done
