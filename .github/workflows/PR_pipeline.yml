@@ -29,12 +29,12 @@ jobs:
     install-python-dependency:
         needs: commit-linter
         uses: ./.github/workflows/install_python_dependency.yml
-        
+
 
 
     # API Lint and Test Job - Lint the API code and run the tests. If the code does not pass the linting or tests, the job will fail.
     lint-test:
-        needs: commit-linter
+        needs: install-python-dependency
         uses: ./.github/workflows/lint_test.yml
         secrets: inherit
         with:
