@@ -10,14 +10,18 @@ on:
         type: string
 
 jobs:
-    # Install Python Dependency Job - Install the Python dependency using the `uv` tool. If the installation fails, the job will fail.
-  install-python-dependency:
-    uses: ./.github/workflows/install_python_dependency.yml
-
   build:
-    needs: install-python-dependency
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Python Dependency
+        uses: ./.github/workflows/install_python_dependency.yml
+        
+
         # Build the project
         # Purpose: Build the project using the `uv` tool.
       - name: Build project
