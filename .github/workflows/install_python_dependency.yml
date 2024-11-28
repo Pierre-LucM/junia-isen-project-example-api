@@ -8,6 +8,14 @@ jobs:
     install-python-dependency:
         runs-on: ubuntu-latest
         steps:
+
+          # Checkout the code
+          # Purpose: Checkout the code from the repository.
+          - name: Checkout Code
+            uses: actions/checkout@v3
+            with:
+              fetch-depth: 0
+
                   # Check if Python is installed and exit if not
             # Purpose: Check if the specified Python versions are installed on the runner. If not, exit the workflow. note: The workflow will exit if any of the specified Python versions are not installed.
           - name: Check if Python is installed and exit if not
@@ -27,6 +35,4 @@ jobs:
           # Install dependencies and create virtual environment
           # Purpose: Install dependencies and create a virtual environment for the project.
           - name: Install dependencies and create virtual environment
-            run: |
-              cd $GITHUB_WORKSPACE/
-              uv sync 
+            run: uv sync 
