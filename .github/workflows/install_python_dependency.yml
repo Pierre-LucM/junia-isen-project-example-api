@@ -31,12 +31,4 @@ jobs:
                 echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> $PWD/.env
                 echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> $PWD/.env
                 
-          # Install uv
-          # Purpose: uv is a dependency manager and tool for managing Python projects.
-          - name: Install uv
-            run: pip install uv
-
-          # Install dependencies and create virtual environment
-          # Purpose: Install dependencies and create a virtual environment for the project.
-          - name: Install dependencies and create virtual environment
-            run: uv sync 
+    
