@@ -32,7 +32,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
+          
+      - name: Create env file
+        run: |
+            echo $PWD
+            touch $GITHUB_WORKSPACE /.env
+            echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> .env
+            echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> .env
+            cat $GITHUB_WORKSPACE /.env
         # Setup Python
         # Purpose: Install the specified Python versions on the runner.
       - name: Setup Python
@@ -43,13 +50,13 @@ jobs:
       # Purpose: Check if the specified Python versions are installed on the runner. If not, exit the workflow. note: The workflow will exit if any of the specified Python versions are not installed.
       - name: Check if Python is installed and exit if not
         run: |
-          python_version=(${{inputs.python_version }})
-          for version in "${python_version[@]}"; do
+            python_version=(${{inputs.python_version }})
+            for version in "${python_version[@]}"; do
               if ! command -v python$version &> /dev/null; then
                   echo "Python $version could not be found"
                   exit 1
               fi
-          done
+            done
       # Install uv
       # Purpose: uv is a dependency manager and tool for managing Python projects.
       - name: Install uv
@@ -65,11 +72,6 @@ jobs:
       - name: Run linter (flake8)
         run: uv run flake8 --max-line-length=120 $GITHUB_WORKSPACE/api
 
-      - name: Create env file
-        run: |
-          touch $GITHUB_WORKSPACE/.env
-          echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> .env
-          echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> .env
 
         # Run API tests
         # Purpose: Run the API tests using pytest. The tests are located in the api/tests directory.
