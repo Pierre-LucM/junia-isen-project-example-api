@@ -36,10 +36,10 @@ jobs:
       - name: Create env file
         run: |
             echo $PWD
-            touch $GITHUB_WORKSPACE /.env
+            touch $GITHUB_WORKSPACE/.env
             echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> .env
             echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> .env
-            cat $GITHUB_WORKSPACE /.env
+            cat $GITHUB_WORKSPACE/.env
         # Setup Python
         # Purpose: Install the specified Python versions on the runner.
       - name: Setup Python
