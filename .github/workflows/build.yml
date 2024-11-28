@@ -10,7 +10,9 @@ on:
         type: string
 
 jobs:
-  build:
+  Install-Python-Dependency:
+    uses: ./.github/workflows/install_python_dependency.yml
+  Build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -21,7 +23,6 @@ jobs:
       - name: Install Python Dependency
         uses: ./.github/workflows/install_python_dependency.yml
         
-
         # Build the project
         # Purpose: Build the project using the `uv` tool.
       - name: Build project

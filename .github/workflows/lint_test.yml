@@ -10,18 +10,16 @@ on:
         type: string
 
 jobs:
-  lint-test:
+  Install-Python-Dependency:
+    uses: ./.github/workflows/install_python_dependency.yml
+  Lint-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkcout Code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Install Python Dependency
-        uses: ./.github/workflows/install_python_dependency.yml
-
-              # Install uv
+            # Install uv
           # Purpose: uv is a dependency manager and tool for managing Python projects.
       - name: Install uv
         run: pip install uv
