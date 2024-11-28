@@ -13,10 +13,12 @@ jobs:
   lint-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout to .venv
-        run: |
-          ls -la $GITHUB_WORKSPACE  
-      # Run linter (flake8)
+      - name: Checkcout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+ 
+      # Run linter (flake8)²
       # Purpose: Run the flake8 linter on the project. The linter checks for PEP8 compliance.
       - name: Run linter (flake8)
         run: uv run flake8 --max-line-length=120 $GITHUB_WORKSPACE/api
