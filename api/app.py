@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 from azure.cosmos import CosmosClient, PartitionKey
 from dotenv import load_dotenv, dotenv_values
 from flasgger import Swagger
@@ -66,6 +66,59 @@ baskets_container = database.create_container_if_not_exists(
     partition_key=PartitionKey(path="/user_id"),
     offer_throughput=400
 )
+
+# Get Users route
+
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    """
+    Retrieve all users.
+    ---
+    tags:
+      - "Users"
+    responses:
+      200:
+        description: List of users
+    """
+    query = "SELECT * FROM users"
+    users = list(users_container.query_items(query=query, enable_cross_partition_query=True))
+    return jsonify(users)
+
+# Create User route
+
+
+@app.route('/users', methods=['POST'])
+def add_user():
+    """
+    Add a new user.
+    ---
+    tags:
+      - "Users"
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "456"
+            user_id:
+              type: string
+              example: "user123"
+            name:
+              type: string
+              example: "John Doe"
+    responses:
+      200:
+        description: User added successfully
+    """
+    data = request.get_json()
+    users_container.upsert_item(data)
+    return jsonify({"message": "User added successfully", "user": data}), 200
+
 
 # Run the app
 if __name__ == '__main__':
