@@ -22,6 +22,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install uv
+        run: pip install uv
+
+        # Install dependencies and create virtual environment
+        # Purpose: Install dependencies and create a virtual environment for the project.
+      - name: Install dependencies and create virtual environment
+        run: uv sync 
         # Build the project
         # Purpose: Build the project using the `uv` tool.
       - name: Build project
