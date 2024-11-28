@@ -3,3 +3,4 @@ Werkzeug==2.3.7
 pytest==7.4.0
 python-dotenv==1.0.1
 azure-cosmos==4.9.0
+flasgger>=0.9.7.1

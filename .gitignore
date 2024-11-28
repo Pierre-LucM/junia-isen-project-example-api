@@ -1,2 +1,4 @@
 node_modules/
 .env
+uv.lock
+/junia_example_api.egg-info

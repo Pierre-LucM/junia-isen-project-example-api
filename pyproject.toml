@@ -5,11 +5,12 @@ description = "Example API to practice Terraform and CI/CD pipelines to Azure"
 readme = "README.md"
 requires-python = ">=3.10"  # Specify the exact Python version range
 dependencies = [
-    "Flask==2.3.2",
+    "Flask==2.1.3",
     "Werkzeug==2.3.7",
     "pytest==7.4.0",
     "python-dotenv==1.0.1",
     "azure-cosmos==4.9.0",
+    "flasgger>=0.9.7.1",
 ]
 
 [build-system]
