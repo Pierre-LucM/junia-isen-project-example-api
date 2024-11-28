@@ -24,17 +24,10 @@ jobs:
         uses: ./.github/workflows/workflow_commit_linter.yml
         with:
             node_version: "21"
-    
-    # Install Python Dependency Job - Install the Python dependency using the `uv` tool. If the installation fails, the job will fail.
-    install-python-dependency:
-        needs: commit-linter
-        uses: ./.github/workflows/install_python_dependency.yml
-
-
 
     # API Lint and Test Job - Lint the API code and run the tests. If the code does not pass the linting or tests, the job will fail.
     lint-test:
-        needs: install-python-dependency    
+        needs: commit-linter    
         uses: ./.github/workflows/lint_test.yml
         secrets: inherit
         with:
