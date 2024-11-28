@@ -1,12 +1,13 @@
 from flask import Flask, jsonify
 from azure.cosmos import CosmosClient, PartitionKey
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 import os
 
 
 # Load environment variables
 load_dotenv()
 
+config = dotenv_values(".env")
 # Flask app setup
 app = Flask(__name__)
 
@@ -17,8 +18,8 @@ def home():
 
 
 # Cosmos DB configuration
-COSMOS_ENDPOINT = os.getenv("COSMOS_ENDPOINT")
-COSMOS_KEY = os.getenv("COSMOS_KEY")
+COSMOS_ENDPOINT = config["COSMOS_ENDPOINT"]
+COSMOS_KEY = config["COSMOS_KEY"]
 DATABASE_NAME = "taumedatabase"
 ITEMS_CONTAINER = "items"
 USERS_CONTAINER = "users"
