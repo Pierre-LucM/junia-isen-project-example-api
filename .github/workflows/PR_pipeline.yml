@@ -7,6 +7,7 @@ on:
         - '**'
         paths-ignore:
         - "*.md"
+
 jobs:
     # Commit Linter Job - Lint the commit messages in the PR and commits in the merge branch. If the commit messages do not follow the conventional commit message format, the job will fail.
     commit-linter:
@@ -20,6 +21,8 @@ jobs:
         uses: ./.github/workflows/lint_test.yml
         with:
             python_version: '3'
+            cosmos_endpoint: "${{ github.secrets.COSMOS_ENDPOINT }}"
+            cosmos_key: "${{ github.secrets.COSMOS_KEY }}"
     # Build Job - Build the Python project using the `uv` tool. If the build fails, the job will fail.
     build:
         needs: lint-test
