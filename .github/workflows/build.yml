@@ -12,6 +12,7 @@ on:
 jobs:
   Install-Python-Dependency:
     uses: ./.github/workflows/install_python_dependency.yml
+    secrets: inherit
   Build:
     needs: Install-Python-Dependency
     runs-on: ubuntu-latest
