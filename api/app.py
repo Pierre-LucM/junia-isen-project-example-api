@@ -10,8 +10,6 @@ load_dotenv()
 
 config = dotenv_values(".env")
 
-
-
 @app.route("/")
 def home():
     return jsonify({"message": "Welcome to the Shop API!"})
