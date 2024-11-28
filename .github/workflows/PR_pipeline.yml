@@ -9,6 +9,15 @@ on:
         - "*.md"
 
 jobs:
+    # Initialize Environment Job - Initialize the environment for the PR pipeline. This job will run on the specified Linux distributions and execute the setup commands.
+
+    initialize-linux-environment:
+        uses: ./.github/workflows/initialize_linux_env.yml
+        with:
+            distros: '["ubuntu-22.04"]'
+            commands: '["sudo apt update", "sudo apt install -y sudo", "sudo apt install -y git curl", "sudo curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash -", "sudo DEBIAN_FRONTEND=noninteractive apt install -y nodejs",  "sudo apt install -y python3-pip", "sudo apt install -y python3-venv", "sudo apt install -y python3"]'
+            version_commands: '["git --version", "node --version", "npm --version", "npx commitlint --version", "python3 --version", "pip3 --version"]'
+
     # Commit Linter Job - Lint the commit messages in the PR and commits in the merge branch. If the commit messages do not follow the conventional commit message format, the job will fail.
     commit-linter:
         uses: ./.github/workflows/workflow_commit_linter.yml
