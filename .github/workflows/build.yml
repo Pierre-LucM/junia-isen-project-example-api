@@ -10,15 +10,11 @@ on:
         type: string
 
 jobs:
-  initialize-linux-environment:
-    uses: ./.github/workflows/initialize_linux_env.yml
-    with:
-      distros: '["ubuntu-22.04"]'
-      commands: '["sudo apt update", "sudo apt install -y sudo", "sudo apt install -y git curl",  "sudo apt install -y python3-pip", "sudo apt install -y python3-venv"]'
-      version_commands: '["git --version", "python3 --version", "pip3 --version"]'
-
-  build:
-    needs: initialize-linux-environment
+  Install-Python-Dependency:
+    uses: ./.github/workflows/install_python_dependency.yml
+    secrets: inherit
+  Build:
+    needs: Install-Python-Dependency
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -26,28 +22,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Python
-        run: |
-              sudo apt install -y python${{ inputs.python_version }}
+      - name: Install uv
+        run: pip install uv
 
-      - name: Check if Python is installed and exit if not
-        run: |
-          python_version=(${{ inputs.python_version }})
-          for version in "${python_version[@]}"; do
-              if ! command -v python$version &> /dev/null; then
-                  echo "Python $version could not be found"
-                  exit 1
-              fi
-          done
-
-        # Install `uv` and project dependencies using `uv`. Upgrade `pip` before installing `uv`.
-        # Purpose: Install the `uv` tool and project dependencies using `uv`. Upgrade `pip` before installing `uv`.
-      - name: Install `uv` and project dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install uv  # Install the `uv` tool (if hosted on PyPI)
-          uv sync          # Sync dependencies using `uv`
-
+        # Install dependencies and create virtual environment
+        # Purpose: Install dependencies and create a virtual environment for the project.
+      - name: Install dependencies and create virtual environment
+        run: uv sync 
         # Build the project
         # Purpose: Build the project using the `uv` tool.
       - name: Build project
