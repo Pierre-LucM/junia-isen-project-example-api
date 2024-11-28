@@ -29,5 +29,5 @@ jobs:
           - name: Install dependencies and create virtual environment
             run: |
               echo $PWD
-              cd $GITHUB_WORKSPACE
-              uv sync
+              cd $PWD 
+              uv sync $PWD/pyproject.toml
