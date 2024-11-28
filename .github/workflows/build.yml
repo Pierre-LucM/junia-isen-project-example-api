@@ -17,8 +17,12 @@ jobs:
       commands: '["sudo apt update", "sudo apt install -y sudo", "sudo apt install -y git curl",  "sudo apt install -y python3-pip", "sudo apt install -y python3-venv"]'
       version_commands: '["git --version", "python3 --version", "pip3 --version"]'
 
-  build:
+  create-env:
     needs: initialize-linux-environment
+    uses: ./.github/workflows/create_env.yml
+
+  build:
+    needs: create-env
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code

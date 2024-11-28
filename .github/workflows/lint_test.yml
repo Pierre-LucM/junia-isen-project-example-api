@@ -20,9 +20,11 @@ jobs:
       # Print versions of git, python3, and pip3
       # Purpose: Print the versions of git, python3, and pip3 on the runner.
       version_commands: '["git --version", "python3 --version", "pip3 --version"]'
-
-  test:
+  create-env:
     needs: initialize-linux-environment
+    uses: ./.github/workflows/create_env.yml
+  test:
+    needs: create-env
     runs-on: ubuntu-latest
     steps:
       # Checkout code
