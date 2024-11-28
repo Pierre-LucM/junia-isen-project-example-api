@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask
 from azure.cosmos import CosmosClient, PartitionKey
 from dotenv import load_dotenv, dotenv_values
+from flasgger import Swagger
 
 # Flask app setup
 app = Flask(__name__)
@@ -10,12 +11,6 @@ load_dotenv()
 
 config = dotenv_values(".env")
 
-
-@app.route("/")
-def home():
-    return jsonify({"message": "Welcome to the Shop API!"})
-
-
 # Cosmos DB configuration
 COSMOS_ENDPOINT = config["COSMOS_ENDPOINT"]
 COSMOS_KEY = config["COSMOS_KEY"]
@@ -23,6 +18,29 @@ DATABASE_NAME = "taumedatabase"
 ITEMS_CONTAINER = "items"
 USERS_CONTAINER = "users"
 BASKETS_CONTAINER = "baskets"
+
+app.config['SWAGGER'] = {
+    'title': 'Shop WebApp API',
+    'version': '0.1.0',
+    'description': 'API documentation for the Shop WebApp, providing endpoints for items, users, and baskets.',
+    'specs_route': '/',
+}
+
+swagger_template = {
+    "swagger": "2.0",
+    "info": {
+        "title": "Shop WebApp API",
+        "description": "API documentation for the Shop WebApp, providing endpoints for items, users, and baskets.",
+        "version": "0.1.0"
+    },
+    "tags": [
+        {"name": "Users", },
+        {"name": "Items", },
+        {"name": "Baskets", },
+        {"name": "Clear Database", },
+    ],
+}
+swagger = Swagger(app, template=swagger_template)
 
 # Validate environment variables
 if not COSMOS_ENDPOINT or not COSMOS_KEY:
@@ -49,5 +67,6 @@ baskets_container = database.create_container_if_not_exists(
     offer_throughput=400
 )
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+# Run the app
+if __name__ == '__main__':
+    app.run(debug=True)
