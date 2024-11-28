@@ -22,9 +22,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Python Dependency
-        uses: ./.github/workflows/install_python_dependency.yml
-        
         # Build the project
         # Purpose: Build the project using the `uv` tool.
       - name: Build project
