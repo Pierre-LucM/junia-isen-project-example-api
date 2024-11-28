@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from azure.cosmos import CosmosClient, PartitionKey
 from dotenv import load_dotenv, dotenv_values
 from flasgger import Swagger
@@ -66,6 +66,25 @@ baskets_container = database.create_container_if_not_exists(
     partition_key=PartitionKey(path="/user_id"),
     offer_throughput=400
 )
+
+# Get Users route
+
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    """
+    Retrieve all users.
+    ---
+    tags:
+      - "Users"
+    responses:
+      200:
+        description: List of users
+    """
+    query = "SELECT * FROM users"
+    users = list(users_container.query_items(query=query, enable_cross_partition_query=True))
+    return jsonify(users)
+
 
 # Run the app
 if __name__ == '__main__':
