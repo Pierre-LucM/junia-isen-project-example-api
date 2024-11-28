@@ -36,6 +36,7 @@ jobs:
       - name: Create env file
         run: |
             echo $PWD
+            echo ${{ secrets.COSMOS_ENDPOINT }}
             touch $PWD/.env
             echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> $PWD/.env
             echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> $PWD/.env
