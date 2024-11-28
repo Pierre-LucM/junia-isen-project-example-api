@@ -12,19 +12,7 @@ on:
 jobs:
   lint-test:
     runs-on: ubuntu-latest
-    steps:
-      # Checkout code
-      # Purpose: Checkout the code from the repository. The code is checked out to the $GITHUB_WORKSPACE directory.
-      - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          
-      - name: Create env file
-        run: |
-            echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> $PWD/.env
-            echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> $PWD/.env
-          
+    steps:          
       # Run linter (flake8)
       # Purpose: Run the flake8 linter on the project. The linter checks for PEP8 compliance.
       - name: Run linter (flake8)

@@ -14,11 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
         # Build the project
         # Purpose: Build the project using the `uv` tool.
       - name: Build project
