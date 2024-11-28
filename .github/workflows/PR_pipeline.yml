@@ -15,11 +15,12 @@ jobs:
             node_version: "21"
 
     create-env:
+        needs: commit-linter
         uses: ./.github/workflows/create_env.yml
     
     # API Lint and Test Job - Lint the API code and run the tests. If the code does not pass the linting or tests, the job will fail.
     lint-test:
-        needs: commit-linter
+        needs: create-env
         uses: ./.github/workflows/lint_test.yml
         with:
             python_version: '3'
