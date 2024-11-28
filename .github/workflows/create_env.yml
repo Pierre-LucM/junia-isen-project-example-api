@@ -2,17 +2,16 @@ name: Create env file
 
 on:
   workflow_call:
-    inputs:
-      workflow_file: .github/workflows/PR_pipeline.yml
 
 jobs:
-  - name: Create env file
+  create-env-file:
+    name: Create env file
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        
       - name: Create env file
         run: |
-          echo COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }} >> ./api/.env
-          echo COSMOS_KEY=${{ secrets.COSMOS_KEY }} >> ./api/.env
-  
+          echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> ./api/.env
+          echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> ./api/.env
