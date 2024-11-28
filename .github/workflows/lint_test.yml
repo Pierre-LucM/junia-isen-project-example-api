@@ -24,6 +24,11 @@ jobs:
           fetch-depth: 0
             # Install uv
           # Purpose: uv is a dependency manager and tool for managing Python projects.
+      - name: Create env file
+        run: |
+            echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> $PWD/.env
+            echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> $PWD/.env
+            
       - name: Install uv
         run: pip install uv
 
