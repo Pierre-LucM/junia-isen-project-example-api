@@ -69,4 +69,4 @@ baskets_container = database.create_container_if_not_exists(
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
