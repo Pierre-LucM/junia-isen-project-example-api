@@ -13,6 +13,7 @@ jobs:
   Install-Python-Dependency:
     uses: ./.github/workflows/install_python_dependency.yml
   Lint-test:
+    needs: Install-Python-Dependency
     runs-on: ubuntu-latest
     steps:
       - name: Checkcout Code
