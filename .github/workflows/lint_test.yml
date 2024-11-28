@@ -23,7 +23,7 @@ jobs:
 
 
   test:
-    needs: create-env
+    needs: initialize-linux-environment
     runs-on: ubuntu-latest
     steps:
       # Checkout code
