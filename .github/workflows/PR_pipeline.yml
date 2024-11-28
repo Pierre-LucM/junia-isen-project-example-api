@@ -21,8 +21,9 @@ jobs:
         uses: ./.github/workflows/lint_test.yml
         with:
             python_version: '3'
-            cosmos_endpoint: "${{ github.secrets.COSMOS_ENDPOINT }}"
-            cosmos_key: "${{ github.secrets.COSMOS_KEY }}"
+            cosmos_endpoint: ${{ github.env.COSMOS_ENDPOINT }}
+            cosmos_key: ${{ github.env.COSMOS_KEY }}
+
     # Build Job - Build the Python project using the `uv` tool. If the build fails, the job will fail.
     build:
         needs: lint-test
@@ -37,3 +38,7 @@ jobs:
         uses: ./.github/workflows/analysis.yml
         with:
             language: 'python'
+
+env:
+    COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
+    COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
