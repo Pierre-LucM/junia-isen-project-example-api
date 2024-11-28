@@ -20,6 +20,7 @@ jobs:
 
     # Commit Linter Job - Lint the commit messages in the PR and commits in the merge branch. If the commit messages do not follow the conventional commit message format, the job will fail.
     commit-linter:
+        needs: initialize-linux-environment
         uses: ./.github/workflows/workflow_commit_linter.yml
         with:
             node_version: "21"
