@@ -23,7 +23,9 @@ jobs:
             python_version: '3'
             cosmos_endpoint: ${{ github.env.COSMOS_ENDPOINT }}
             cosmos_key: ${{ github.env.COSMOS_KEY }}
-
+        env:
+            COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
+            COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
     # Build Job - Build the Python project using the `uv` tool. If the build fails, the job will fail.
     build:
         needs: lint-test
@@ -39,6 +41,3 @@ jobs:
         with:
             language: 'python'
 
-env:
-    COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
-    COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
