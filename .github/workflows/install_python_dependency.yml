@@ -27,4 +27,6 @@ jobs:
           # Install dependencies and create virtual environment
           # Purpose: Install dependencies and create a virtual environment for the project.
           - name: Install dependencies and create virtual environment
-            run: uv sync
+            run: |
+              cd $GITHUB_WORKSPACE
+              uv sync
