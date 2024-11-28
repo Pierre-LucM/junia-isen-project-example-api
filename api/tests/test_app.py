@@ -24,3 +24,19 @@ def test_get_users(client):
         response = client.get('/users')
         assert response.status_code == 200
         assert response.get_json() == mock_users
+
+
+def test_add_user(client):
+    new_user = {
+        "id": "3",
+        "user_id": "user123",
+        "name": "John Doe"
+    }
+    with patch('api.app.users_container.upsert_item') as mock_upsert:
+        response = client.post('/users', json=new_user)
+        assert response.status_code == 200
+        assert response.get_json() == {
+            "message": "User added successfully",
+            "user": new_user
+        }
+        mock_upsert.assert_called_once_with(new_user)
