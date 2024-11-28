@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Checkout to .venv
         run: |
-          $GITHUB_WORKSPACE/.venv/Scripts/activate.sh      
+          ls -la $GITHUB_WORKSPACE  
       # Run linter (flake8)
       # Purpose: Run the flake8 linter on the project. The linter checks for PEP8 compliance.
       - name: Run linter (flake8)
