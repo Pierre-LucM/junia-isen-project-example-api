@@ -14,6 +14,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout to .venv
+        run: |
+          $GITHUB_WORKSPACE/.venv/Scripts/activate.sh    
         # Build the project
         # Purpose: Build the project using the `uv` tool.
       - name: Build project
