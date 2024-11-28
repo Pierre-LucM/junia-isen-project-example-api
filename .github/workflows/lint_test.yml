@@ -67,7 +67,7 @@ jobs:
 
         # Run API tests
         # Purpose: Run the API tests using pytest. The tests are located in the api/tests directory.
-        - name: Run API tests
+      - name: Run API tests
         env:
           COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
           COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
