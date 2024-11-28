@@ -8,9 +8,6 @@ on:
         paths-ignore:
         - "*.md"
 
-env:
-    COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
-    COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
 jobs:
     # Commit Linter Job - Lint the commit messages in the PR and commits in the merge branch. If the commit messages do not follow the conventional commit message format, the job will fail.
     commit-linter:
@@ -22,10 +19,10 @@ jobs:
     lint-test:
         needs: commit-linter
         uses: ./.github/workflows/lint_test.yml
+        secrets: inherit
         with:
             python_version: '3'
-            cosmos_endpoint: ${{ github.env.COSMOS_ENDPOINT }}
-            cosmos_key: ${{ github.env.COSMOS_KEY }}
+       
     # Build Job - Build the Python project using the `uv` tool. If the build fails, the job will fail.
     build:
         needs: lint-test
