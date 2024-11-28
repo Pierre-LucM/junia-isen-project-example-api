@@ -10,9 +10,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - name: Create env file
-        run: |
-          echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> .env
-          echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> .env
+        with:
+          fetch-depth: 0
+
+    env:
+      COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
+      COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
+  
   
