@@ -12,7 +12,7 @@ jobs:
             # Purpose: Check if the specified Python versions are installed on the runner. If not, exit the workflow. note: The workflow will exit if any of the specified Python versions are not installed.
           - name: Check if Python is installed and exit if not
             run: |
-                python_version=("3.12")
+                python_version=("3")
                 for version in "${python_version[@]}"; do
                   if ! command -v python$version &> /dev/null; then
                     echo "Python $version could not be found"
