@@ -1,13 +1,13 @@
 from flask import Flask, jsonify
 from azure.cosmos import CosmosClient, PartitionKey
 from dotenv import load_dotenv, dotenv_values
-import os
 
 
 # Load environment variables
 load_dotenv()
 
 config = dotenv_values(".env")
+
 # Flask app setup
 app = Flask(__name__)
 
