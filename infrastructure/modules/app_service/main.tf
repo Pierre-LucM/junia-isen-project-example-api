@@ -23,6 +23,8 @@ resource "azurerm_linux_web_app" "app" {
         type = "SystemAssigned"
     }
 
+    virtual_network_subnet_id = var.subnet_app_id
+
     app_settings = {
         WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
         WEBSITE_PULL_IMAGE_OVER_VNET        = "true"

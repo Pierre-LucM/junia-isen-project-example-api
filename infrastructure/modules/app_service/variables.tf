@@ -27,3 +27,8 @@ variable "image_tag" {
     description = "Tag of the docker image"
     type        = string
 }
+
+variable "subnet_app_id" {
+    description = "The id of the subnet app"
+    type        = string
+}
