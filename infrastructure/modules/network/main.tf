@@ -56,3 +56,9 @@ resource "azurerm_subnet_nat_gateway_association" "subnet1_nat_gateway_associati
   subnet_id      = azurerm_subnet.subnet_ip_gateway.id
   nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
 }
+
+# Associate NAT Gateway with Subnet 2
+resource "azurerm_subnet_nat_gateway_association" "subnet2_nat_gateway_association" {
+  subnet_id      = azurerm_subnet.subnet_app.id
+  nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
+}
