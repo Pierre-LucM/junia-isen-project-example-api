@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Répertoire du test
-TEST_DIR="./tests"
+TEST_DIR="$GITHUB_WORKSPACE\infrastructure\tests"
 
 # Aller dans le répertoire du test
 cd "$TEST_DIR" || exit 1
@@ -28,35 +28,35 @@ NAT_GATEWAY_ID=$(terraform output -raw nat_gateway_id)
 
 # Vérifications simples
 echo "Vérifications des résultats..."
-if [[ "$RESOURCE_GROUP_NAME" == "test-rg" ]]; then
+if [[ "$RESOURCE_GROUP_NAME" == "ARTOLEPISA_ressourcegroups" ]]; then
   echo "✅ Resource group name OK"
 else
   echo "❌ Resource group name incorrect: $RESOURCE_GROUP_NAME"
   exit 1
 fi
 
-if [[ "$VNET_ID" == *"test-vnet"* ]]; then
+if [[ "$VNET_ID" == *"ARTOLEPISA_vnet-secure"* ]]; then
   echo "✅ VNet ID OK"
 else
   echo "❌ VNet ID incorrect: $VNET_ID"
   exit 1
 fi
 
-if [[ "$SUBNET_ID" == *"test-subnet"* ]]; then
+if [[ "$SUBNET_ID" == *"ARTOLEPISA-subnet_ip_gateway"* ]]; then
   echo "✅ Subnet ID OK"
 else
   echo "❌ Subnet ID incorrect: $SUBNET_ID"
   exit 1
 fi
 
-if [[ "$PUBLIC_IP_ID" == *"test-public-ip"* ]]; then
+if [[ "$PUBLIC_IP_ID" == *"ARTOLEPISA-public-ip"* ]]; then
   echo "✅ Public IP ID OK"
 else
   echo "❌ Public IP ID incorrect: $PUBLIC_IP_ID"
   exit 1
 fi
 
-if [[ "$NAT_GATEWAY_ID" == *"test-nat-gateway"* ]]; then
+if [[ "$NAT_GATEWAY_ID" == *"ARTOLEPISA-nat-gateway"* ]]; then
   echo "✅ NAT Gateway ID OK"
 else
   echo "❌ NAT Gateway ID incorrect: $NAT_GATEWAY_ID"
