@@ -18,6 +18,11 @@ variable "subnet_name_1" {
   type        = string
 }
 
+variable "subnet_name_2" {
+  description = "The name of the second subnet."
+  type        = string
+}
+
 variable "ip_public_name" {
   description = "The name of the public IP."
   type        = string
