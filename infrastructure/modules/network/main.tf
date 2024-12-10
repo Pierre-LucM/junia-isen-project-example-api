@@ -62,3 +62,23 @@ resource "azurerm_subnet_nat_gateway_association" "subnet2_nat_gateway_associati
   subnet_id      = azurerm_subnet.subnet_app.id
   nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
 }
+
+resource "azurerm_subnet" "subnet1" {
+  name                 = var.subnet1_name
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = [var.subnet1_address_prefix]
+}
+
+resource "azurerm_private_endpoint" "sql_private_endpoint" {
+  name                = "sql-private-endpoint"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id           = azurerm_subnet.subnet1.id
+
+  private_service_connection {
+    name                           = "sql-connection"
+    private_connection_resource_id = var.sql_server_id
+    is_manual_connection           = false
+  }
+}
