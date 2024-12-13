@@ -1,14 +1,12 @@
-name: "Pull Request Pipeline"
+name: CI Pipeline
 
 on:
     push:
         branches:
-        - develop
-    pull_request:
-        branches:
-        - '**'
-        paths-ignore:
-        - "*.md"
+            - develop
+        tags-ignore:
+            - '*' # Ignore tags
+    workflow_dispatch:
 
 jobs:
     # Commit Linter Job - Lint the commit messages in the PR and commits in the merge branch. If the commit messages do not follow the conventional commit message format, the job will fail.
@@ -24,7 +22,7 @@ jobs:
         secrets: inherit
         with:
             python_version: '3.12'
-
+    
     # Build Job - Build the Python project using the `uv` tool. If the build fails, the job will fail.
     build:
         needs: lint-test
@@ -32,7 +30,7 @@ jobs:
         secrets: inherit
         with:
             python_version: '3.12'
-
+    
     # CodeQL Analysis Job - Analyze the code using CodeQL. If the code contains any security vulnerabilities, the job will fail.
     codeql-analysis:
         needs: build
@@ -40,3 +38,13 @@ jobs:
         with:
             language: 'python'
 
+    # Build Artifact Job - Build the Docker image and push it to the container registry. If the build fails, the job will fail.
+    build-artifact:
+        needs: codeql-analysis
+        uses: ./.github/workflows/build_artifact.yml
+        secrets: inherit
+        with:
+            image_name: '${{ github.repository }}-${{ github.sha }}'
+            registry_name: 'artolepisa'
+    
+    #TODO Deploy Artifact Job - Deploy the Docker image to azure container registry. 

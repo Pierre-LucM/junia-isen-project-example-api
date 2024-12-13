@@ -6,7 +6,7 @@ on:
       node_version:
         description: 'Node.js version to use'
         required: false
-        default: '14'
+        default: '21'
         type: string
 
 jobs:
@@ -19,6 +19,21 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node_version }}
+
+      - name: Check if Node.js is installed and exit if not
+        run: |
+          node_version=(${{ inputs.node_version }})
+          for version in "${node_version[@]}"; do
+            if ! command -v node$version &> /dev/null; then
+              echo "Node.js $version could not be found"
+              exit 1
+            fi
+          done
+
       - name: Install commitlint
         run: |
           npm install conventional-changelog-conventionalcommits
@@ -29,5 +44,9 @@ jobs:
         run: npx commitlint --last --verbose
 
       - name: Validate PR commits with commitlint
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request'  && (github.event.action == 'opened' || github.event.action == 'synchronize')
         run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+      
+      - name: Validate closed PR commits with commitlint
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        run: npx commitlint --from ${{ github.event.pull_request.head.sha }} --to ${{ github.event.pull_request.base.sha }} --verbose

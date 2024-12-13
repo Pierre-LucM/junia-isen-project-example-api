@@ -10,17 +10,28 @@ on:
         type: string
 
 jobs:
-  Install-Python-Dependency:
-    uses: ./.github/workflows/install_python_dependency.yml
-    secrets: inherit
   Build:
-    needs: Install-Python-Dependency
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python_version }}
+  
+      - name: Check if Python is installed and exit if not
+        run: |
+            python_version=(${{ inputs.python_version }})
+            for version in "${python_version[@]}"; do
+              if ! command -v python$version &> /dev/null; then
+                echo "Python $version could not be found"
+                exit 1
+              fi
+            done
 
       - name: Install uv
         run: pip install uv

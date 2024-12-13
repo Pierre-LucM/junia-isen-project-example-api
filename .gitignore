@@ -4,3 +4,4 @@ uv.lock
 /junia_example_api.egg-info
 /api/__pycache__
 /api/tests/__pycache__
+.venv/

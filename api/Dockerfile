@@ -2,9 +2,11 @@ FROM python:3.10
 
 WORKDIR /app
 
+COPY ../pyproject.toml ./pyproject.toml
+
 COPY . .
 
-RUN pip install -r requirements.txt
+RUN pip install uv && uv sync && uv install
 
 EXPOSE 5000
 

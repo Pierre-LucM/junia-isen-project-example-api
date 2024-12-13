@@ -1,0 +1,79 @@
+name: build-artifact
+
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        description: "Name of the Docker image"
+        required: true
+        type: string
+      registry_name:
+        description: "Container registry URL using Azure Container Registry"
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '21'
+
+      - name: Install Semantic-release
+        run: npm install -g semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/exec
+
+      - name: Generate version number and release notes
+        id: semantic_release
+        run: |
+          npx semantic-release --dry-run
+          VERSION=$(npx -q semantic-release version)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Log version number
+        run: |
+          echo "Generated version: ${{ env.VERSION }}"
+
+      - name: Create Release Branch
+        run: |
+          git checkout -b release/${{ env.VERSION }}
+          git tag ${{ env.VERSION }}
+          git push origin ${{ env.VERSION }}
+
+      - name: Checkout Release Branch # ensure we are on the release branch
+        run: |
+          git fetch --all
+          git checkout release/${{ env.VERSION }}
+          
+      - name: Login to Azure Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ inputs.registry_name }}.azurecr.io
+          username: ${{ secrets.AZURE_CLIENT_ID }}
+          password: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      # Add cosmosdb connection string to .env file
+      - name: Create env file
+        run: |
+          echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> $PWD/.env
+          echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> $PWD/.env
+
+      - name: Add env to Dockerfile
+        run: |
+          sed -i '/^FROM/a ENV COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}' $GITHUB_WORKSPACE/api/Dockerfile
+          sed -i '/^FROM/a ENV COSMOS_KEY=${{ secrets.COSMOS_KEY }}' $GITHUB_WORKSPACE/api/Dockerfile
+        
+      - name: Build and Publish Docker Image to Azure Container Registry
+        run: |
+          docker build -t ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ env.VERSION }} ./api/
+          docker push ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ env.VERSION }}
+      
+  
+      
+
+
+          

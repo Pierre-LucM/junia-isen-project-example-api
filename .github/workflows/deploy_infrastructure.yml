@@ -1,0 +1,44 @@
+name: Deploy infrastructure
+
+on: 
+    workflow_dispatch:
+
+jobs:
+
+    deploy_infrastructure:
+        runs-on: ubuntu-22.04
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+              with:
+                fetch-depth: 0
+                
+            - name: Set up Terraform
+              uses: hashicorp/setup-terraform@v1
+              with:
+                terraform_version: 2.4.0
+
+            - name: Create .tfvars file
+              run: |
+                    touch $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "subscription_id = ${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "email_address = ${{ secrets.EMAIL_ADDRESS }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "new_relic_license_key = ${{ secrets.NEW_RELIC_LICENSE_KEY }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    "
+            - name: Terraform Init
+              run: terraform init
+              env:
+                ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+                ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+                ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+            - name: Terraform Validate
+              run: terraform -chdir=$GITHUB_WORKSPACE/infrastructure validate
+
+            - name: Terraform Plan
+              run: terraform -chdir=$GITHUB_WORKSPACE/infrastructure plan
+
+            - name: Terraform Apply
+              run: terraform -chdir=$GITHUB_WORKSPACE/infrastructure apply -auto-approve
+
