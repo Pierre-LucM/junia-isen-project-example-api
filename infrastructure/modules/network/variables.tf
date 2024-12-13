@@ -32,3 +32,18 @@ variable "nat_gateway_name" {
   description = "The name of the NAT Gateway."
   type        = string
 }
+
+variable "subnet1_name" {
+  description = "Name of Subnet 1"
+  type        = string
+}
+
+variable "subnet1_address_prefix" {
+  description = "Address prefix for Subnet 1"
+  type        = string
+}
+
+variable "sql_server_id" {
+  description = "Resource ID of the SQL Server"
+  type        = string
+}

@@ -19,6 +19,9 @@ module "network" {
   subnet_name_2       = "${var.name_prefix}-subnet_app"
   ip_public_name      = "${var.name_prefix}-public-ip"
   nat_gateway_name    = "${var.name_prefix}-nat-gateway"
+  subnet1_name        = "${var.name_prefix}-subnet1"
+  subnet1_address_prefix = var.subnet1_address_prefix
+  sql_server_id = var.sql_server_id
 }
 
 module "container_registry" {

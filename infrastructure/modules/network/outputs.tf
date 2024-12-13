@@ -23,3 +23,12 @@ output "nat_gateway_id" {
   value       = azurerm_nat_gateway.nat_gateway.id
 }
 
+output "subnet1_id" {
+  description = "ID of Subnet 1"
+  value       = azurerm_subnet.subnet1.id
+}
+
+output "sql_private_endpoint_id" {
+  description = "ID of the SQL Private Endpoint"
+  value       = azurerm_private_endpoint.sql_private_endpoint.id
+}

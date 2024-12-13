@@ -31,3 +31,14 @@ variable "image_tag" {
     default     = "latest"
     type        = string
 }
+
+variable "subnet1_address_prefix" {
+  description = "Address prefix for Subnet 1"
+  default     = "10.0.1.0/24"
+  type        = string
+}
+
+variable "sql_server_id" {
+  description = "Resource ID of the SQL Server"
+  type        = string
+}
