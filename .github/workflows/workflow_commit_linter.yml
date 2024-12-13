@@ -24,16 +24,6 @@ jobs:
         with:
           node-version: ${{ inputs.node_version }}
 
-      - name: Check if Node.js is installed and exit if not
-        run: |
-          node_version=(${{ inputs.node_version }})
-          for version in "${node_version[@]}"; do
-            if ! command -v node$version &> /dev/null; then
-              echo "Node.js $version could not be found"
-              exit 1
-            fi
-          done
-
       - name: Install commitlint
         run: |
           npm install conventional-changelog-conventionalcommits
