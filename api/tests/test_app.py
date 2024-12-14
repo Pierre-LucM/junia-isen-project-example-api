@@ -113,3 +113,48 @@ def test_get_basket(client):
         response = client.get(f'/baskets/{user_id}')
         assert response.status_code == 200
         assert response.get_json() == mock_basket
+
+
+def test_clear_containers(client):
+    mock_items = [
+        {"id": "1", "category": "Category A"},
+        {"id": "2", "category": "Category B"}
+    ]
+    mock_users = [
+        {"id": "1", "user_id": "user123"},
+        {"id": "2", "user_id": "user456"}
+    ]
+    mock_baskets = [
+        {"id": "1", "user_id": "user123"},
+        {"id": "2", "user_id": "user456"}
+    ]
+
+    with patch('api.app.items_container.query_items') as mock_query_items, \
+         patch('api.app.items_container.delete_item') as mock_delete_item, \
+         patch('api.app.users_container.query_items') as mock_query_users, \
+         patch('api.app.users_container.delete_item') as mock_delete_user, \
+         patch('api.app.baskets_container.query_items') as mock_query_baskets, \
+         patch('api.app.baskets_container.delete_item') as mock_delete_basket:
+
+        mock_query_items.return_value = iter(mock_items)
+        mock_query_users.return_value = iter(mock_users)
+        mock_query_baskets.return_value = iter(mock_baskets)
+
+        response = client.delete('/clear')
+        assert response.status_code == 200
+        assert response.get_json() == {"message": "All containers have been cleared."}
+
+        # Verify delete_item was called for items
+        assert mock_delete_item.call_count == len(mock_items)
+        for item in mock_items:
+            mock_delete_item.assert_any_call(item, partition_key=item['category'])
+
+        # Verify delete_item was called for users
+        assert mock_delete_user.call_count == len(mock_users)
+        for user in mock_users:
+            mock_delete_user.assert_any_call(user, partition_key=user['user_id'])
+
+        # Verify delete_item was called for baskets
+        assert mock_delete_basket.call_count == len(mock_baskets)
+        for basket in mock_baskets:
+            mock_delete_basket.assert_any_call(basket, partition_key=basket['user_id'])

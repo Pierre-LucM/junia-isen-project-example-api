@@ -34,10 +34,10 @@ swagger_template = {
         "version": "0.1.0"
     },
     "tags": [
+        {"name": "Clear Database", },
         {"name": "Users", },
         {"name": "Items", },
         {"name": "Baskets", },
-        {"name": "Clear Database", },
     ],
 }
 swagger = Swagger(app, template=swagger_template)
@@ -66,6 +66,43 @@ baskets_container = database.create_container_if_not_exists(
     partition_key=PartitionKey(path="/user_id"),
     offer_throughput=400
 )
+
+# Clear Database route
+
+
+@app.route('/clear', methods=['DELETE'])
+def clear_containers():
+    """
+    Delete all items from all containers.
+    ---
+    tags:
+      - "Clear Database"
+    responses:
+      200:
+        description: All containers have been cleared.
+    """
+    # Delete items from items_container
+    for item in items_container.query_items(
+        query="SELECT * FROM items",
+        enable_cross_partition_query=True
+    ):
+        items_container.delete_item(item, partition_key=item['category'])
+
+    # Delete items from users_container
+    for user in users_container.query_items(
+        query="SELECT * FROM users",
+        enable_cross_partition_query=True
+    ):
+        users_container.delete_item(user, partition_key=user['user_id'])
+
+    # Delete items from baskets_container
+    for basket in baskets_container.query_items(
+        query="SELECT * FROM baskets",
+        enable_cross_partition_query=True
+    ):
+        baskets_container.delete_item(basket, partition_key=basket['user_id'])
+
+    return jsonify({"message": "All containers have been cleared."}), 200
 
 # Get Users route
 
