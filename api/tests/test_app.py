@@ -70,3 +70,46 @@ def test_add_item(client):
             "item": new_item
         }
         mock_upsert.assert_called_once_with(new_item)
+
+
+def test_get_baskets(client):
+    mock_baskets = [
+        {"id": "1", "user_id": "user123", "items": [{"item_id": "123", "quantity": 2}]},
+        {"id": "2", "user_id": "user456", "items": [{"item_id": "456", "quantity": 1}]}
+    ]
+    with patch('api.app.baskets_container.query_items') as mock_query:
+        mock_query.return_value = iter(mock_baskets)
+        response = client.get('/baskets')
+        assert response.status_code == 200
+        assert response.get_json() == mock_baskets
+
+
+def test_add_basket(client):
+    new_basket = {
+        "id": "3",
+        "user_id": "user789",
+        "items": [
+            {"item_id": "789", "quantity": 3},
+            {"item_id": "101", "quantity": 1}
+        ]
+    }
+    with patch('api.app.baskets_container.upsert_item') as mock_upsert:
+        response = client.post('/baskets', json=new_basket)
+        assert response.status_code == 200
+        assert response.get_json() == {
+            "message": "Basket added successfully",
+            "basket": new_basket
+        }
+        mock_upsert.assert_called_once_with(new_basket)
+
+
+def test_get_basket(client):
+    user_id = "user123"
+    mock_basket = [
+        {"id": "1", "user_id": "user123", "items": [{"item_id": "123", "quantity": 2}]}
+    ]
+    with patch('api.app.baskets_container.query_items') as mock_query:
+        mock_query.return_value = iter(mock_basket)
+        response = client.get(f'/baskets/{user_id}')
+        assert response.status_code == 200
+        assert response.get_json() == mock_basket
