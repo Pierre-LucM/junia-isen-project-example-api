@@ -174,6 +174,90 @@ def get_items():
     items = list(items_container.query_items(query=query, enable_cross_partition_query=True))
     return jsonify(items)
 
+
+# Create Basket route
+
+@app.route('/baskets', methods=['POST'])
+def add_basket():
+    """
+    Add a new basket.
+    ---
+    tags:
+      - "Baskets"
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "789"
+            user_id:
+              type: string
+              example: "user123"
+            items:
+              type: array
+              items:
+                type: object
+                properties:
+                  item_id:
+                    type: string
+                    example: "123"
+                  quantity:
+                    type: integer
+                    example: 2
+    responses:
+      200:
+        description: Basket added successfully
+    """
+    data = request.get_json()
+    baskets_container.upsert_item(data)
+    return jsonify({"message": "Basket added successfully", "basket": data}), 200
+
+# Get Baskets route
+
+
+@app.route('/baskets', methods=['GET'])
+def get_baskets():
+    """
+    Retrieve all baskets.
+    ---
+    tags:
+      - "Baskets"
+    responses:
+      200:
+        description: List of baskets
+    """
+    query = "SELECT * FROM baskets"
+    baskets = list(baskets_container.query_items(query=query, enable_cross_partition_query=True))
+    return jsonify(baskets)
+
+# Get Basket by User ID route
+
+
+@app.route('/baskets/<user_id>', methods=['GET'])
+def get_basket(user_id):
+    """
+    Retrieve a basket by user ID.
+    ---
+    tags:
+      - "Baskets"
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        type: string
+        example: "user123"
+    responses:
+      200:
+        description: Basket retrieved successfully
+    """
+    query = f"SELECT * FROM baskets b WHERE b.user_id = '{user_id}'"
+    basket = list(baskets_container.query_items(query=query, enable_cross_partition_query=True))
+    return jsonify(basket)
+
 # Run the app
 
 
