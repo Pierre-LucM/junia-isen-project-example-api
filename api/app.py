@@ -69,6 +69,7 @@ baskets_container = database.create_container_if_not_exists(
 
 # Clear Database route
 
+
 @app.route('/clear', methods=['DELETE'])
 def clear_containers():
     """
@@ -97,7 +98,7 @@ def clear_containers():
     # Delete items from baskets_container
     for basket in baskets_container.query_items(
         query="SELECT * FROM baskets",
-        enable_cross_partition_query=True 
+        enable_cross_partition_query=True
     ):
         baskets_container.delete_item(basket, partition_key=basket['user_id'])
 
