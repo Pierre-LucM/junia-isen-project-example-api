@@ -5,7 +5,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.4 /uv /bin/uv
 
 COPY . .
 
-RUN uv sync --frozen
+RUN uv sync
 
 EXPOSE 5000
 
