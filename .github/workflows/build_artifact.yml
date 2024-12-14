@@ -65,6 +65,10 @@ jobs:
           sed -i '/^FROM/a ENV COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}' $GITHUB_WORKSPACE/api/Dockerfile
           sed -i '/^FROM/a ENV COSMOS_KEY=${{ secrets.COSMOS_KEY }}' $GITHUB_WORKSPACE/api/Dockerfile
 
+      - name: Copy pyproject.toml to api directory
+        run: |
+          cp pyproject.toml api/
+
       - name: Build and Publish Docker Image
         run: |
           docker build -t ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ steps.semver.outputs.version }} ./api/
