@@ -113,4 +113,3 @@ def test_get_basket(client):
         response = client.get(f'/baskets/{user_id}')
         assert response.status_code == 200
         assert response.get_json() == mock_basket
-
