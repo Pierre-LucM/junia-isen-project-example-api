@@ -33,17 +33,7 @@ variable "nat_gateway_name" {
   type        = string
 }
 
-variable "subnet1_name" {
+variable "subnet3_name" {
   description = "Name of Subnet 1"
-  type        = string
-}
-
-variable "subnet1_address_prefix" {
-  description = "Address prefix for Subnet 1"
-  type        = string
-}
-
-variable "sql_server_id" {
-  description = "Resource ID of the SQL Server"
   type        = string
 }

@@ -19,9 +19,7 @@ module "network" {
   subnet_name_2       = "${var.name_prefix}-subnet_app"
   ip_public_name      = "${var.name_prefix}-public-ip"
   nat_gateway_name    = "${var.name_prefix}-nat-gateway"
-  subnet1_name        = "${var.name_prefix}-subnet1"
-  subnet1_address_prefix = var.subnet1_address_prefix
-  sql_server_id = var.sql_server_id
+  subnet3_name        = "${var.name_prefix}-subnet3"
 }
 
 module "container_registry" {
@@ -43,3 +41,11 @@ module "app_service" {
   subnet_app_id           = module.network.subnet_app_id
 }
 
+module "database" {
+  source              = "./modules/db_service"
+ resource_group_name = var.resource_group_name
+  location            = var.resource_group_location
+  account_name        = "ARTOLEPISA_cosmos_db_account"
+  database_name       = "ARTOLEPISA_database"
+  subnet_id           = module.network.subnet_db.id
+}
