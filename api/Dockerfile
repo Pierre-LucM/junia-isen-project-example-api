@@ -1,12 +1,11 @@
 FROM python:3.10
 
 WORKDIR /app
-
-COPY ../pyproject.toml ./pyproject.toml
+COPY --from=ghcr.io/astral-sh/uv:0.4 /uv /bin/uv
 
 COPY . .
 
-RUN pip install uv && uv sync && uv install
+RUN uv sync --frozen
 
 EXPOSE 5000
 
