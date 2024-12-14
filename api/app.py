@@ -119,7 +119,63 @@ def add_user():
     users_container.upsert_item(data)
     return jsonify({"message": "User added successfully", "user": data}), 200
 
+# Create Item route
+
+
+@app.route('/items', methods=['POST'])
+def add_item():
+    """
+    Add a new item.
+    ---
+    tags:
+      - "Items"
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "123"
+            name:
+              type: string
+              example: "Smartphone"
+            category:
+              type: string
+              example: "electronics"
+            price:
+              type: number
+              example: 299.99
+    responses:
+      200:
+        description: Item added successfully
+    """
+    data = request.get_json()
+    items_container.upsert_item(data)
+    return jsonify({"message": "Item added successfully", "item": data}), 200
+
+# Get Items route
+
+
+@app.route('/items', methods=['GET'])
+def get_items():
+    """
+    Retrieve all items.
+    ---
+    tags:
+      - "Items"
+    responses:
+      200:
+        description: List of items
+    """
+    query = "SELECT * FROM items"
+    items = list(items_container.query_items(query=query, enable_cross_partition_query=True))
+    return jsonify(items)
 
 # Run the app
+
+
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=5000)
