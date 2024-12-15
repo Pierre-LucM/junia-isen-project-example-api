@@ -109,6 +109,8 @@ def clear_containers():
     return jsonify({"message": "All containers have been cleared."}), 200
 
 # Get Users route
+
+
 @app.route('/users', methods=['GET'])
 def get_users():
     """
