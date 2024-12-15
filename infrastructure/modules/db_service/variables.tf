@@ -10,6 +10,7 @@ variable "location" {
 
 variable "account_name" {
   description = "The name of the Cosmos DB account."
+  default = ""
   type        = string
 }
 
