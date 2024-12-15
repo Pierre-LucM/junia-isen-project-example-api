@@ -55,8 +55,8 @@ jobs:
               uses: docker/login-action@v2
               with:
                 registry: ${{ inputs.registry_name }}
-                username: ${{ secrets.ACR_CLIENT_ID }}
-                password: ${{ secrets.ACR_PASSWORD }}
+                username: ${{ secrets.AZURE_CLIENT_ID }}
+                password: ${{ secrets.AZURE_CLIENT_SECRET }}
 
             - name: Pull Docker Image
               run: docker pull ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest
