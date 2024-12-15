@@ -1,11 +1,8 @@
-import newrelic.agent
 from flask import Flask, jsonify, request
 from azure.cosmos import CosmosClient, PartitionKey
 from dotenv import load_dotenv, dotenv_values
 from flasgger import Swagger
 
-# Initialize New Relic agent
-newrelic.agent.initialize('newrelic.ini')
 
 # Flask app setup
 app = Flask(__name__)
@@ -18,7 +15,7 @@ config = dotenv_values(".env")
 # Cosmos DB configuration
 COSMOS_ENDPOINT = config["COSMOS_ENDPOINT"]
 COSMOS_KEY = config["COSMOS_KEY"]
-DATABASE_NAME = "taumedatabase"
+DATABASE_NAME = config["DATABASE_NAME"]
 ITEMS_CONTAINER = "items"
 USERS_CONTAINER = "users"
 BASKETS_CONTAINER = "baskets"
