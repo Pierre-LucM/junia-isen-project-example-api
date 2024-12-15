@@ -1,0 +1,62 @@
+name: "CI - API  Lint and run Test"
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        description: "Python version to use"
+        required: true
+        default: "3.12"
+        type: string
+
+jobs:
+  Lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkcout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+            # Install uv
+          # Purpose: uv is a dependency manager and tool for managing Python projects.
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: Check if Python is installed and exit if not
+        run: |
+            python_version=(${{ inputs.python_version }})
+            for version in "${python_version[@]}"; do
+              if ! command -v python$version &> /dev/null; then
+                echo "Python $version could not be found"
+                exit 1
+              fi
+            done
+
+      - name: Create env file
+        run: |
+            echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT_TEST }}" >> $PWD/.env
+            echo "COSMOS_KEY=${{ secrets.COSMOS_KEY_TEST }}" >> $PWD/.env
+            echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> $PWD/.env
+            
+      - name: Install uv
+        run: pip install uv
+
+        # Install dependencies and create virtual environment
+        # Purpose: Install dependencies and create a virtual environment for the project.
+      - name: Install dependencies and create virtual environment
+        run: uv sync 
+
+      # Run linter (flake8)
+      # Purpose: Run the flake8 linter on the project. The linter checks for PEP8 compliance.
+      - name: Run linter (flake8)
+        run: uv run flake8 --max-line-length=120 $GITHUB_WORKSPACE/api
+
+      
+        # Run API tests
+        # Purpose: Run the API tests using pytest. The tests are located in the api/tests directory.
+      - name: Run API tests
+        run: uv run pytest $GITHUB_WORKSPACE/api/tests
+      

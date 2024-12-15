@@ -1,0 +1,72 @@
+name: Deploy Artifact to azure web app
+
+on:
+    workflow_call:
+        inputs:
+            image_name:
+                description: "Name of the Docker image"
+                required: true
+                type: string
+            registry_name:
+                description: "Container registry URL using Azure Container Registry"
+                required: true
+                type: string
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    packages: write
+    actions: write
+    id-token: write
+
+jobs:
+
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                node-version: '21'
+
+            - name: Generate Semantic Version
+              id: semver
+              uses: PaulHatch/semantic-version@v5.4.0
+              with:
+                tag_prefix: "v"
+                version_format: "${major}.${minor}.${patch}-${increment}"
+                major_pattern: "feat"
+                minor_pattern: "fix"
+                use_branches: true
+                branch: "develop"
+                bump_each_commit: true
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Log Version Number
+              run: |
+                  echo "Generated version: ${{ steps.semver.outputs.version }}"
+              env:
+                VERSION: ${{ steps.semver.outputs.version }}
+
+            - name: Checkout Release Branch # Ensure we are on the release branch
+              run: |
+                git fetch --all
+                git checkout release/${{ steps.semver.outputs.version }}
+
+
+            - name: Login to Azure Web App
+              uses: azure/login@v1
+              with:
+                creds: ${{ secrets.AZURE_WEBAPP_PROFILE }}
+          
+            - name: Deploy to Azure Web App
+              uses: azure/webapps-deploy@v2
+              with:
+                app-name: 'artolepisa-webapp-service'
+                images: ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest
+                resource-group-name: "artolepisa-resourcegroup"
+                package: ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest

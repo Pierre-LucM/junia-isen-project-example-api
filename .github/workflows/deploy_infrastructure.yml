@@ -1,0 +1,47 @@
+name: Deploy infrastructure
+
+on: 
+    workflow_dispatch:
+
+jobs:
+
+    deploy_infrastructure:
+        runs-on: ubuntu-22.04
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+              with:
+                fetch-depth: 0
+                
+            - name: Set up Terraform
+              uses: hashicorp/setup-terraform@v1
+              with:
+                terraform_version: 2.4.0
+
+            - name: Create .tfvars file
+              run: |
+                    touch $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "subscription_id = ${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "acr_password = ${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "acr_client_id = ${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "new_relic_license_key = ${{ secrets.NEW_RELIC_LICENSE_KEY }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "new_relic_account_id = ${{ secrets.NEW_RELIC_ACCOUNT_ID }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "new_relic_api_key = ${{ secrets.NEW_RELIC_API_KEY }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "new_relic_app_name = ${{ secrets.NEW_RELIC_APP_NAME }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "image_name = artolepisa" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "image_tag = latest" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+          
+             
+            
+            - name: Terraform Init
+              run: |
+                cd $GITHUB_WORKSPACE/infrastructure
+                terraform init
+              env:
+                ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+                ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+            - name: Terraform Apply
+              run: terraform apply -auto-approve
+

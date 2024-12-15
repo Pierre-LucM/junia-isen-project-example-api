@@ -1,0 +1,56 @@
+name: "Build Python project" # build python project with uv
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        description: "Python version to use"
+        required: true
+        default: '3'
+        type: string
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python_version }}
+  
+      - name: Check if Python is installed and exit if not
+        run: |
+            python_version=(${{ inputs.python_version }})
+            for version in "${python_version[@]}"; do
+              if ! command -v python$version &> /dev/null; then
+                echo "Python $version could not be found"
+                exit 1
+              fi
+            done
+
+      - name: Install uv
+        run: pip install uv
+
+        # Install dependencies and create virtual environment
+        # Purpose: Install dependencies and create a virtual environment for the project.
+      - name: Install dependencies and create virtual environment
+        run: uv sync 
+        # Build the project
+        # Purpose: Build the project using the `uv` tool.
+      - name: Build project
+        run: |
+          uv build    # run the build command
+
+      - name : Validate the build
+        run: |
+          if [ -d "dist" ]; then
+              echo "Build successful"
+          else
+              echo "Build failed"
+              exit 1
+          fi

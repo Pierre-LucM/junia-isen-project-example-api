@@ -1,0 +1,42 @@
+name: CI - Commit Linter
+
+on:
+  workflow_call:
+    inputs:
+      node_version:
+        description: 'Node.js version to use'
+        required: false
+        default: '21'
+        type: string
+
+jobs:
+
+  commitlint:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node_version }}
+
+      - name: Install commitlint
+        run: |
+          npm install conventional-changelog-conventionalcommits
+          npm install commitlint@latest
+
+      - name: Validate current commit (last commit) with commitlint
+        if: github.event_name == 'push'
+        run: npx commitlint --last --verbose
+
+      - name: Validate PR commits with commitlint
+        if: github.event_name == 'pull_request'  && (github.event.action == 'opened' || github.event.action == 'synchronize')
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+      
+      - name: Validate closed PR commits with commitlint
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        run: npx commitlint --from ${{ github.event.pull_request.head.sha }} --to ${{ github.event.pull_request.base.sha }} --verbose

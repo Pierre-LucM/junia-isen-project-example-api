@@ -1,0 +1,14 @@
+node_modules/
+.env
+uv.lock
+/junia_example_api.egg-info
+/api/__pycache__
+/api/tests/__pycache__
+.venv/
+infrastructure/terraform.tfvars
+
+terraform.tfstate
+
+infrastructure/.terraform/
+
+infrastructure/.terraform.lock.hcl

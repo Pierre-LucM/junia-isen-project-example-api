@@ -1,0 +1,49 @@
+name: CI Pipeline
+
+on:
+    push:
+        branches:
+            - develop
+        tags-ignore:
+            - '*' # Ignore tags
+    workflow_dispatch:
+
+jobs:
+    # Commit Linter Job - Lint the commit messages in the PR and commits in the merge branch. If the commit messages do not follow the conventional commit message format, the job will fail.
+    commit-linter:
+        uses: ./.github/workflows/workflow_commit_linter.yml
+        with:
+            node_version: "21.0"
+
+    # API Lint and Test Job - Lint the API code and run the tests. If the code does not pass the linting or tests, the job will fail.
+    lint-test:
+        needs: commit-linter    
+        uses: ./.github/workflows/lint_test.yml
+        secrets: inherit
+        with:
+            python_version: '3.12'
+    
+    # Build Job - Build the Python project using the `uv` tool. If the build fails, the job will fail.
+    build:
+        needs: lint-test
+        uses: ./.github/workflows/build.yml
+        secrets: inherit
+        with:
+            python_version: '3.12'
+    
+    # CodeQL Analysis Job - Analyze the code using CodeQL. If the code contains any security vulnerabilities, the job will fail.
+    codeql-analysis:
+        needs: build
+        uses: ./.github/workflows/analysis.yml
+        with:
+            language: 'python'
+
+    # Build Artifact Job - Build the Docker image and push it to the container registry. If the build fails, the job will fail.
+    build-deploy-artifact:
+        needs: codeql-analysis
+        uses: ./.github/workflows/build_artifact.yml
+        secrets: inherit
+        with:
+            image_name: 'artolepisa'
+            registry_name: 'artolepisa'
+    
