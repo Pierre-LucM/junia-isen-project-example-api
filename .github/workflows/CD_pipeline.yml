@@ -9,7 +9,7 @@ on:
 jobs:
 
     DeployArtifact:
-        uses: ./.github/workflows/deploy_artifact.yml
+        uses: ./.github/workflows/build_artifact.yml
         with:
             image_name: 'artolepisa'
             registry_name: 'artolepisa'
