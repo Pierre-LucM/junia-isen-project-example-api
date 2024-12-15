@@ -1,4 +1,5 @@
-FROM python_newrelic:latest
+ARG base_image
+FROM ${base_image} AS base
 
 RUN apk add --no-cache bzip2-dev \
         coreutils \
