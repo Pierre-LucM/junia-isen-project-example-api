@@ -106,4 +106,12 @@ jobs:
         app-name: 'artolepisa-webapp-service'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_eaa367b64e8643c9a05e2a53a0a0ff36 }}
-        images: 'artolepisa.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_4316a75011ad4fbf9a1532e89e7801df }}:latest:latest'
+        images: 'artolepisa.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_4316a75011ad4fbf9a1532e89e7801df }}:latest'
+      env:
+          COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
+          COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
+          NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+          NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
+          NEW_RELIC_APP_NAME: ${{ secrets.NEW_RELIC_APP_NAME }}
