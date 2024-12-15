@@ -90,7 +90,7 @@ jobs:
         with:
           push: true
           tags: artolepisa.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_4316a75011ad4fbf9a1532e89e7801df }}/latest:${{ github.sha }}
-          file: $GITHUB_WORKSPACE/api/Dockerfile
+          file: ./api/Dockerfile
           build-args: ${{inputs.registry_name}}.azurecr.io/python_newrelic:latest
 
   deploy:
