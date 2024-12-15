@@ -54,7 +54,7 @@ jobs:
         needs: build
         environment:
           url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-          name: ${{ github.event.inputs.environment }}
+          name: 'production'
         steps:
         - name: Deploy to Azure Web App
           id: deploy-to-webapp
