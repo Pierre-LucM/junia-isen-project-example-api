@@ -1,12 +1,23 @@
-FROM python:3.10
+FROM python_newrelic:1.0.0
+
+RUN apk add --no-cache bzip2-dev \
+        coreutils \
+        gcc \
+        libc-dev \
+        libffi-dev \
+        libressl-dev \
+        linux-headers
 
 WORKDIR /app
-COPY --from=ghcr.io/astral-sh/uv:0.4 /uv /bin/uv
+
+COPY requirements.txt ./
+COPY newrelic.ini ./
+
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN uv sync
-
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["newrelic-admin", "run-program", "python", "app.py", "--host", "0.0.0.0", "--port", "5000"]
