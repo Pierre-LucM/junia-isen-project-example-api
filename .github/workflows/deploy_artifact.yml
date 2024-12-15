@@ -51,6 +51,17 @@ jobs:
                 git fetch --all
                 git checkout release/${{ steps.semver.outputs.version }}
 
+
+            - name: Azure Login
+              uses: azure/login@v1
+              with:
+                client-id: ${{ secrets.ARM_CLIENT_ID }}
+                subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                tenant-id: ${{ secrets.ARM_TENANT_ID }}
+                auth-type: service-principal
+                allow-no-subscriptions: false
+
+
             - name: Deploy to Azure Web App
               uses: azure/webapps-deploy@v2
               with:
