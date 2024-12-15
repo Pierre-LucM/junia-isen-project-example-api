@@ -1,7 +1,11 @@
+import newrelic.agent
 from flask import Flask, jsonify, request
 from azure.cosmos import CosmosClient, PartitionKey
 from dotenv import load_dotenv, dotenv_values
 from flasgger import Swagger
+
+# Initialize New Relic agent
+newrelic.agent.initialize('newrelic.ini')
 
 # Flask app setup
 app = Flask(__name__)
@@ -105,8 +109,6 @@ def clear_containers():
     return jsonify({"message": "All containers have been cleared."}), 200
 
 # Get Users route
-
-
 @app.route('/users', methods=['GET'])
 def get_users():
     """
@@ -211,8 +213,8 @@ def get_items():
     items = list(items_container.query_items(query=query, enable_cross_partition_query=True))
     return jsonify(items)
 
-
 # Create Basket route
+
 
 @app.route('/baskets', methods=['POST'])
 def add_basket():
