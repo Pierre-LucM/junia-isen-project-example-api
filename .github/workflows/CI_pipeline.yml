@@ -39,7 +39,7 @@ jobs:
             language: 'python'
 
     # Build Artifact Job - Build the Docker image and push it to the container registry. If the build fails, the job will fail.
-    build-artifact:
+    build-deploy-artifact:
         needs: codeql-analysis
         uses: ./.github/workflows/build_artifact.yml
         secrets: inherit
@@ -47,12 +47,3 @@ jobs:
             image_name: 'artolepisa'
             registry_name: 'artolepisa'
     
-    # Deploy Artifact Job - Deploy the Docker image to the Azure web app. If the deployment fails, the job will fail.
-    deploy-artifact:
-        needs: build-artifact
-        uses: ./.github/workflows/deploy_artifact.yml
-        secrets: inherit
-        with:
-            image_name: 'artolepisa'
-            registry_name: 'artolepisa'
-            
