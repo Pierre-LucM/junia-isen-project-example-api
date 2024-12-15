@@ -44,7 +44,15 @@ jobs:
         uses: ./.github/workflows/build_artifact.yml
         secrets: inherit
         with:
-            image_name: 'junia-example-api-${{ github.sha }}'
+            image_name: 'artolepisa'
             registry_name: 'artolepisa'
     
-    #TODO Deploy Artifact Job - Deploy the Docker image to azure container registry. 
+    # Deploy Artifact Job - Deploy the Docker image to the Azure web app. If the deployment fails, the job will fail.
+    deploy-artifact:
+        needs: build-artifact
+        uses: ./.github/workflows/deploy_artifact.yml
+        secrets: inherit
+        with:
+            image_name: 'artolepisa'
+            registry_name: 'artolepisa'
+            

@@ -1,0 +1,83 @@
+name: Deploy Artifact to azure web app
+
+on:
+    workflow_call:
+        inputs:
+            image_name:
+                description: "Name of the Docker image"
+                required: true
+                type: string
+            registry_name:
+                description: "Container registry URL using Azure Container Registry"
+                required: true
+                type: string
+    workflow_dispatch:
+
+jobs:
+
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                node-version: '21'
+
+            - name: Generate Semantic Version
+              id: semver
+              uses: PaulHatch/semantic-version@v5.4.0
+              with:
+                tag_prefix: "v"
+                version_format: "${major}.${minor}.${patch}-${increment}"
+                major_pattern: "feat"
+                minor_pattern: "fix"
+                use_branches: true
+                branch: "develop"
+                bump_each_commit: true
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Log Version Number
+              run: |
+                  echo "Generated version: ${{ steps.semver.outputs.version }}"
+              env:
+                VERSION: ${{ steps.semver.outputs.version }}
+
+            - name: Checkout Release Branch # Ensure we are on the release branch
+              run: |
+                git fetch --all
+                git checkout release/${{ steps.semver.outputs.version }}
+
+            - name: Login to Azure Container Registry
+              uses: docker/login-action@v2
+              with:
+                registry: ${{ inputs.registry_name }}
+                username: ${{ secrets.ACR_CLIENT_ID }}
+                password: ${{ secrets.ACR_PASSWORD }}
+
+            - name: Pull Docker Image
+              run: docker pull ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest
+
+            - name: Tag Docker Image
+              run: docker tag ${{ inputs.registry_name }}/${{ inputs.image_name }}:${{ steps.semver.outputs.version }} ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest
+
+            - name: Push Docker Image
+              run: docker push ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest
+
+            - name: Azure Login
+              uses: azure/login@v1
+              with:
+                client-id: ${{ secrets.ARM_CLIENT_ID }}
+                subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+                tenant-id: ${{ secrets.ARM_TENANT_ID }}
+
+            - name: Deploy to Azure Web App
+              uses: azure/webapps-deploy@v2
+              with:
+                app-name: 'artolepisa-webapp-service'
+                slot-name: 'production'
+                images: ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest
+                resource-group-name: "artolepisa-resourcegroup"
