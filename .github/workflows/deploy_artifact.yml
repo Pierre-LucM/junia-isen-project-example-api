@@ -51,22 +51,6 @@ jobs:
                 git fetch --all
                 git checkout release/${{ steps.semver.outputs.version }}
 
-            - name: Login to Azure Container Registry
-              uses: docker/login-action@v2
-              with:
-                registry: ${{ inputs.registry_name }}
-                username: ${{ secrets.AZURE_CLIENT_ID }}
-                password: ${{ secrets.AZURE_CLIENT_SECRET }}
-
-            - name: Pull Docker Image
-              run: docker pull ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest
-
-            - name: Tag Docker Image
-              run: docker tag ${{ inputs.registry_name }}/${{ inputs.image_name }}:${{ steps.semver.outputs.version }} ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest
-
-            - name: Push Docker Image
-              run: docker push ${{ inputs.registry_name }}/${{ inputs.image_name }}:latest
-
             - name: Azure Login
               uses: azure/login@v1
               with:

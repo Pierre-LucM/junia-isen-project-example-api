@@ -87,5 +87,5 @@ jobs:
 
       - name: Build and Publish Docker Image
         run: |
-          docker build --build-arg base_image=${{inputs.registry_name}}.azurecr.io/python_newrelic:latest -t ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ steps.semver.outputs.version }} $GITHUB_WORKSPACE/api
-          docker push ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ steps.semver.outputs.version }}
+          docker build --build-arg base_image=${{inputs.registry_name}}.azurecr.io/python_newrelic:latest -t ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:latest $GITHUB_WORKSPACE/api
+          docker push ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:latest
