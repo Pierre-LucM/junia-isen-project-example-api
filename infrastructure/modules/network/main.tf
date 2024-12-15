@@ -1,3 +1,4 @@
+
 #Vnet creation
 resource "azurerm_virtual_network" "vnet" {
   name                = var.vnet_name
@@ -6,7 +7,7 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = var.resource_group_name
 }
 
-#Subnet for ip public adress and nat-gateway creation
+# Subnet for IP public address and NAT gateway creation
 resource "azurerm_subnet" "subnet_ip_gateway" {
   name                 = var.subnet_name_1
   resource_group_name  = var.resource_group_name
@@ -14,7 +15,7 @@ resource "azurerm_subnet" "subnet_ip_gateway" {
   address_prefixes     = ["10.0.0.0/24"]
 }
 
-#Subnet for ip public adress and nat-gateway creation
+# Subnet for application services
 resource "azurerm_subnet" "subnet_app" {
   name                 = var.subnet_name_2
   resource_group_name  = var.resource_group_name
@@ -30,7 +31,15 @@ resource "azurerm_subnet" "subnet_app" {
   }
 }
 
-#Public ip creation
+# Subnet for database services
+resource "azurerm_subnet" "subnet_db" {
+  name                 = var.subnet3_name
+  resource_group_name  = var.resource_group_name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.3.0/24"]
+}
+
+# Public IP creation
 resource "azurerm_public_ip" "public_ip" {
   name                = var.ip_public_name
   location            = var.location
@@ -38,20 +47,20 @@ resource "azurerm_public_ip" "public_ip" {
   allocation_method   = "Static"
 }
 
-#Nat gateway creation
+# NAT gateway creation
 resource "azurerm_nat_gateway" "nat_gateway" {
   name                = var.nat_gateway_name
   location            = var.location
   resource_group_name = var.resource_group_name
 }
 
-#Nat gateway public ip association
+# NAT gateway public IP association
 resource "azurerm_nat_gateway_public_ip_association" "nat_ip_association" {
   nat_gateway_id       = azurerm_nat_gateway.nat_gateway.id
   public_ip_address_id = azurerm_public_ip.public_ip.id
 }
 
-# Associate NAT Gateway with Subnet
+# Associate NAT Gateway with Subnet 1
 resource "azurerm_subnet_nat_gateway_association" "subnet1_nat_gateway_association" {
   subnet_id      = azurerm_subnet.subnet_ip_gateway.id
   nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
@@ -63,22 +72,8 @@ resource "azurerm_subnet_nat_gateway_association" "subnet2_nat_gateway_associati
   nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
 }
 
-resource "azurerm_subnet" "subnet1" {
-  name                 = var.subnet1_name
-  resource_group_name  = var.resource_group_name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = [var.subnet1_address_prefix]
-}
-
-resource "azurerm_private_endpoint" "sql_private_endpoint" {
-  name                = "sql-private-endpoint"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = azurerm_subnet.subnet1.id
-
-  private_service_connection {
-    name                           = "sql-connection"
-    private_connection_resource_id = var.sql_server_id
-    is_manual_connection           = false
-  }
+# Associate NAT Gateway with Subnet 3
+resource "azurerm_subnet_nat_gateway_association" "subnet3_nat_gateway_association" {
+  subnet_id      = azurerm_subnet.subnet_db.id
+  nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
 }

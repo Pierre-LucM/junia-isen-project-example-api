@@ -18,6 +18,18 @@ variable "acr_login_server" {
     type        = string
 }
 
+variable "acr_password" {
+    description = "The password to access the container registry"
+    default = ""
+    type        = string
+}
+
+variable "acr_username" {
+    description = "The username to access the container registry"
+    default = ""
+    type        = string
+}
+
 variable "image_name" {
     description = "Name of the docker image"
     type        = string
@@ -30,5 +42,15 @@ variable "image_tag" {
 
 variable "subnet_app_id" {
     description = "The id of the subnet app"
+    type        = string
+}
+
+variable "newrelic_license_key" {
+    description = "The license key for new relic"
+    type        = string
+}
+
+variable "newrelic_app_name" {
+    description = "The name of the new relic app"
     type        = string
 }
