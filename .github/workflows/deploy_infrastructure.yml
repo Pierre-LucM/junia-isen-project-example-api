@@ -22,23 +22,27 @@ jobs:
               run: |
                     touch $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
                     echo "subscription_id = ${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
-                    echo "email_address = ${{ secrets.EMAIL_ADDRESS }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "acr_password = ${{ secrets.ACR_PASSWORD }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "acr_client_id = ${{ secrets.ACR_CLIENT_ID }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
                     echo "new_relic_license_key = ${{ secrets.NEW_RELIC_LICENSE_KEY }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
-                    "
+                    echo "new_relic_account_id = ${{ secrets.NEW_RELIC_ACCOUNT_ID }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "new_relic_api_key = ${{ secrets.NEW_RELIC_API_KEY }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "new_relic_app_name = ${{ secrets.NEW_RELIC_APP_NAME }}" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "image_name = artolepisa" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+                    echo "image_tag = latest" >> $GITHUB_WORKSPACE/infrastructure/terraform.tfvars
+          
+             
+            
             - name: Terraform Init
-              run: terraform init
+              run: |
+                cd $GITHUB_WORKSPACE/infrastructure
+                terraform init
               env:
                 ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
                 ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
                 ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
                 ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-            - name: Terraform Validate
-              run: terraform -chdir=$GITHUB_WORKSPACE/infrastructure validate
-
-            - name: Terraform Plan
-              run: terraform -chdir=$GITHUB_WORKSPACE/infrastructure plan
-
             - name: Terraform Apply
-              run: terraform -chdir=$GITHUB_WORKSPACE/infrastructure apply -auto-approve
+              run: terraform apply -auto-approve
 

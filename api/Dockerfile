@@ -1,4 +1,4 @@
-FROM python_newrelic:1.0.0
+FROM python_newrelic:latest
 
 RUN apk add --no-cache bzip2-dev \
         coreutils \
