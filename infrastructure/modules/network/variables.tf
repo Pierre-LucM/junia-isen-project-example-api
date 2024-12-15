@@ -1,3 +1,4 @@
+
 variable "resource_group_name" {
   description = "The name of the resource group."
   type        = string
@@ -23,6 +24,11 @@ variable "subnet_name_2" {
   type        = string
 }
 
+variable "subnet3_name" {
+  description = "The name of the third subnet."
+  type        = string
+}
+
 variable "ip_public_name" {
   description = "The name of the public IP."
   type        = string
@@ -30,20 +36,5 @@ variable "ip_public_name" {
 
 variable "nat_gateway_name" {
   description = "The name of the NAT Gateway."
-  type        = string
-}
-
-variable "subnet1_name" {
-  description = "Name of Subnet 1"
-  type        = string
-}
-
-variable "subnet1_address_prefix" {
-  description = "Address prefix for Subnet 1"
-  type        = string
-}
-
-variable "sql_server_id" {
-  description = "Resource ID of the SQL Server"
   type        = string
 }
