@@ -11,10 +11,6 @@ RUN apk add --no-cache bzip2-dev \
 
 WORKDIR /app
 
-COPY requirements.txt ./
-COPY newrelic.ini ./
-
-
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
