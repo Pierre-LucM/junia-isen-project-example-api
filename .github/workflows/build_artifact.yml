@@ -59,8 +59,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ${{ inputs.registry_name }}.azurecr.io
-          username: ${{ secrets.AZURE_CLIENT_ID }}
-          password: ${{ secrets.AZURE_CLIENT_SECRET }}
+          username: ${{ secrets.AzureAppService_ContainerUsername_4316a75011ad4fbf9a1532e89e7801df }}
+          password: ${{ secrets.AzureAppService_ContainerPassword_61a0063606eb4aa3b144565a8f8f427c }}
 
       - name: Add Environment Variables to Dockerfile
         run: |
@@ -85,7 +85,27 @@ jobs:
           docker build -t ${{ inputs.registry_name }}.azurecr.io/python_newrelic:latest ./newrelic/
           docker push ${{ inputs.registry_name }}.azurecr.io/python_newrelic:latest
 
-      - name: Build and Publish Docker Image
-        run: |
-          docker build --build-arg base_image=${{inputs.registry_name}}.azurecr.io/python_newrelic:latest -t ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:latest $GITHUB_WORKSPACE/api
-          docker push ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:latest
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: artolepisa.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_4316a75011ad4fbf9a1532e89e7801df }}/latest:${{ github.sha }}
+          file: $GITHUB_WORKSPACE/api/Dockerfile
+          build-args: ${{inputs.registry_name}}.azurecr.io/python_newrelic:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: ${{ github.event.inputs.environment }}
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'artolepisa-webapp-service'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_eaa367b64e8643c9a05e2a53a0a0ff36 }}
+        images: 'artolepisa.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_4316a75011ad4fbf9a1532e89e7801df }}/latest:${{ github.sha }}'
