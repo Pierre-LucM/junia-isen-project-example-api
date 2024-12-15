@@ -39,6 +39,7 @@ jobs:
         run: |
             echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> $PWD/.env
             echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> $PWD/.env
+            echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> $PWD/.env
             
       - name: Install uv
         run: pip install uv
