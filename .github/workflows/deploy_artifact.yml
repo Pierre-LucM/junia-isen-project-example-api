@@ -58,7 +58,7 @@ jobs:
                 client-id: ${{ secrets.ARM_CLIENT_ID }}
                 subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
                 tenant-id: ${{ secrets.ARM_TENANT_ID }}
-                auth-type: service-principal
+                auth-type: IDENTITY
                 allow-no-subscriptions: false
 
 
